@@ -1,0 +1,53 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<link rel="import" href="/sc-model.html">
+
+<dom-module id="page-product-details">
+  <template>
+    <!-- local DOM for your element -->
+    <sc-model resource-type="Product" resource-id="{{productId}}" resource-field="name" value="{{productName}}"></sc-model>
+    <sc-model resource-type="Product" resource-id="{{productId}}" resource-field="price" value="{{productPrice}}"></sc-model>
+    <sc-model resource-type="Product" resource-id="{{productId}}" resource-field="qty" value="{{productQty}}"></sc-model>
+    <sc-model resource-type="Product" resource-id="{{productId}}" resource-field="desc" value="{{productDesc}}"></sc-model>
+    
+    <h2>{{productName}}</h2>
+    <div>
+      <span>Qty:</span><input type="text" value="{{productQty::input}}">
+    <div>
+    <div>
+      <span>Price:</span><input type="text" value="{{productPrice::input}}">
+    <div>
+    <div>
+      <span>Description:</span><input type="text" value="{{productDesc::input}}">
+    <div>
+  </template>
+
+  <script>
+    // element registration
+    Polymer({
+      is: 'page-product-details',
+      
+      // add properties and methods on the element's prototype
+
+      properties: {
+        // declare properties for the element's public API
+        
+        productId: {
+          type: Number,
+          value: 1
+        },
+        productName: {
+          type: String
+        },
+        productQty: {
+          type: Number
+        },
+        productPrice: {
+          type: Number
+        },
+        productDesc: {
+          type: String
+        }
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,26 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<script type="text/javascript" src="/socketcluster.js"></script>
+
+<dom-module id="sc-socket">
+  <template></template>
+
+  <script>
+    // This makes the socket object accessible globally on window.
+    // we will allow this for debugging/convenience.
+    
+    var socket = socketCluster.connect();
+  
+    Polymer({
+      is: 'sc-socket',
+      
+      properties: {
+        socket: {
+          type: Object,
+          notify : true,
+          readOnly: true,
+          value: socket
+        }
+      }
+    });
+  </script>
+</dom-module>

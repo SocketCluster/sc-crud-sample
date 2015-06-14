@@ -1,0 +1,27 @@
+{
+  "name": "sc-sample-inventory",
+  "version": "0.0.0",
+  "homepage": "http://socketcluster.io/",
+  "authors": [
+    "Jonathan Gros-Dubois <grosjona@yahoo.com.au>"
+  ],
+  "description": "Sample inventory tracking app build on SocketCluster",
+  "keywords": [
+    "realtime",
+    "socketcluster",
+    "sample",
+    "inventory",
+    "websockets"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#~1.0.3"
+  }
+}

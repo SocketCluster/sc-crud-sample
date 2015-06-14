@@ -1,0 +1,94 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<link rel="import" href="/sc-socket.html">
+
+<dom-module id="sc-model">
+  <template>
+    <sc-socket socket="{{socket}}"></sc-socket>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'sc-model',
+      
+      properties: {
+        resourceType: {
+          type: String
+        },
+        resourceId: {
+          type: Number
+        },
+        resourceField: {
+          type: String
+        },
+        value: {
+          type: Object,
+          notify: true,
+          observer: 'handleValueChange'
+        },
+        socket: {
+          type: Object
+        },
+        channel: {
+          type: Object
+        }
+      },
+      
+      attached: function () {
+        var self = this;
+        
+        var sourcePath;
+        if (this.resourceField) {
+          sourcePath = this.resourceType + '/' + this.resourceId + '/' + this.resourceField;
+        } else if (this.resourceId) {
+          sourcePath = this.resourceType + '/' + this.resourceId;
+        } else {
+          sourcePath = this.resourceType;
+        }
+        
+        var query = {
+          type: this.resourceType,
+          id: this.resourceId,
+          field: this.resourceField
+        };
+        
+        // Get the initial value for the model
+        this.socket.emit('get', query, function (err, data) {
+          if (err) {
+            // TODO: Handle error
+          } else {
+            self.value = data;
+          }
+        });
+        
+        // Subscribe to further changes while this model is active
+        this.channel = this.socket.subscribe(sourcePath);
+        
+        // Consume the realtime channel data as it arrives
+        this.channel.watch(function (data) {
+          self.value = data;
+        });
+      },
+      
+      handleValueChange: function (newValue) {
+        var query = {
+          type: this.resourceType,
+          id: this.resourceId,
+          field: this.resourceField,
+          value: newValue
+        };
+        
+        // Update the model on the server
+        this.socket.emit('set', query, function (err, data) {
+          if (err) {
+            // TODO: Handle error
+          }
+        });
+      },
+      
+      detached: function () {
+        this.channel.unsubscribe();
+        this.channel.unwatch();
+      }
+    });
+  </script>
+</dom-module>
