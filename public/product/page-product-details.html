@@ -4,20 +4,20 @@
 <dom-module id="page-product-details">
   <template>
     <!-- local DOM for your element -->
-    <sc-model resource-type="Product" resource-id="{{productId}}" resource-field="name" value="{{productName}}"></sc-model>
-    <sc-model resource-type="Product" resource-id="{{productId}}" resource-field="price" value="{{productPrice}}"></sc-model>
-    <sc-model resource-type="Product" resource-id="{{productId}}" resource-field="qty" value="{{productQty}}"></sc-model>
-    <sc-model resource-type="Product" resource-id="{{productId}}" resource-field="desc" value="{{productDesc}}"></sc-model>
+    <sc-model id="product-name" resource-type="Product" resource-id="{{productId}}" resource-field="name" resource-value="{{productName}}"></sc-model>
+    <sc-model id="product-qty" resource-type="Product" resource-id="{{productId}}" resource-field="qty" resource-value="{{productQty}}"></sc-model>
+    <sc-model id="product-price" resource-type="Product" resource-id="{{productId}}" resource-field="price" resource-value="{{productPrice}}"></sc-model>
+    <sc-model id="product-desc" resource-type="Product" resource-id="{{productId}}" resource-field="desc" resource-value="{{productDesc}}"></sc-model>
     
     <h2>{{productName}}</h2>
     <div>
-      <span>Qty:</span><input type="text" value="{{productQty::input}}">
+      <span>Qty:</span><input type="text" value="{{productQty}}" on-change="saveValue" data-save-to="product-qty">
     <div>
     <div>
-      <span>Price:</span><input type="text" value="{{productPrice::input}}">
+      <span>Price:</span><input type="text" value="{{productPrice}}" on-change="saveValue" data-save-to="product-price">
     <div>
     <div>
-      <span>Description:</span><input type="text" value="{{productDesc::input}}">
+      <span>Description:</span><input type="text" value="{{productDesc}}" on-change="saveValue" data-save-to="product-desc">
     <div>
   </template>
 
@@ -44,9 +44,18 @@
         productPrice: {
           type: Number
         },
+        productDescVersion: {
+          type: Number
+        },
         productDesc: {
           type: String
         }
+      },
+      
+      saveValue: function (event) {
+        var targetModelName = event.target.dataset.saveTo;
+        var targetModel = this.$[targetModelName];
+        targetModel.fire('save', event.target.value);
       }
     });
   </script>

@@ -10,6 +10,10 @@
     Polymer({
       is: 'sc-model',
       
+      listeners: {
+        'save': 'saveValue'
+      },
+      
       properties: {
         resourceType: {
           type: String
@@ -20,10 +24,9 @@
         resourceField: {
           type: String
         },
-        value: {
+        resourceValue: {
           type: Object,
-          notify: true,
-          observer: 'handleValueChange'
+          notify: true
         },
         socket: {
           type: Object
@@ -52,31 +55,42 @@
         };
         
         // Get the initial value for the model
-        this.socket.emit('get', query, function (err, data) {
-          if (err) {
-            // TODO: Handle error
-          } else {
-            self.value = data;
-          }
+        var loadValue = function () {
+          self.socket.emit('get', query, function (err, data) {
+            if (err) {
+              // TODO: Handle error
+            } else {
+              self.resourceValue = data;
+            }
+          });
+        };
+        
+        // This is to account for socket reconnects - After recovering from a lost connection,
+        // we will re-fetch the whole value to make sure that we haven't missed any updates made to it
+        this.socket.on('connect', function (status) {
+          loadValue();
         });
+        
+        if (this.socket.state == 'open') {
+          loadValue();
+        }
         
         // Subscribe to further changes while this model is active
         this.channel = this.socket.subscribe(sourcePath);
         
         // Consume the realtime channel data as it arrives
-        this.channel.watch(function (data) {
-          self.value = data;
+        this.channel.watch(function (packet) {
+          self.resourceValue = packet.value;
         });
       },
       
-      handleValueChange: function (newValue) {
+      saveValue: function (event, newValue) {
         var query = {
           type: this.resourceType,
           id: this.resourceId,
           field: this.resourceField,
           value: newValue
         };
-        
         // Update the model on the server
         this.socket.emit('set', query, function (err, data) {
           if (err) {

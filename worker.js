@@ -14,6 +14,19 @@ module.exports.run = function (worker) {
   app.use(serveStatic(path.resolve(__dirname, 'public')));
 
   httpServer.on('request', app);
+  
+  scServer.addMiddleware(scServer.MIDDLEWARE_PUBLISH_OUT,
+    function (socket, channel, data, next) {
+      if (data.from == socket.id) {
+        // Prevent publishing back to publisher for efficiency reasons
+        next(true);
+      } else {
+        // Remove the 'from' property from the outgoing publish packet
+        delete data.from;
+        next(null);
+      }
+    }
+  );
 
   var count = 0;
   
@@ -28,12 +41,6 @@ module.exports.run = function (worker) {
   };
   
   scServer.global.set('Product', products);
-  
-  var c = 0;
-  
-  setInterval(function () {
-    scServer.global.publish('Product/1/qty', c++);
-  }, 1000);
 
   /*
     In here we handle our incoming realtime connections and listen for events.
@@ -58,12 +65,17 @@ module.exports.run = function (worker) {
           var channelName;
           
           if (query.field) {
-            scServer.global.publish(query.type + '/' + query.id + '/' + query.field, query.value);
+            var publishPacket = {
+              from: socket.id,
+              value: query.value
+            };
+            //setTimeout(function () {
+            scServer.global.publish(query.type + '/' + query.id + '/' + query.field, publishPacket);
+            //}, 1000);
           }
         }
         callback(err);
       });
     });
-    
   });
 };

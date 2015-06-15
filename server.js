@@ -9,5 +9,7 @@ var socketCluster = new SocketCluster({
   workerController: __dirname + '/worker.js',
   storeController: __dirname + '/store.js',
   socketChannelLimit: 100,
-  rebootWorkerOnCrash: argv['auto-reboot'] != false
+  rebootWorkerOnCrash: argv['auto-reboot'] != false,
+  pingTimeout: 5000,
+  pingInterval: 2000
 });
