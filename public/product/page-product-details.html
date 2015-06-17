@@ -2,6 +2,33 @@
 <link rel="import" href="/sc-model.html">
 
 <dom-module id="page-product-details">
+  <style>
+    .heading {
+      margin-bottom: 30px;
+    }
+    
+    .content-container {
+      width: 400px;
+      display: flex;
+      -webkit-display: flex;
+      flex-direction: column;
+      -webkit-flex-direction: column;
+      padding: 20px;
+    }
+    
+    .content-row {
+      display: flex;
+      -webkit-display: flex;
+      width: 100%;
+    }
+    
+    .content-col {
+      box-sizing: border-box;
+      display: inline-block;
+      width: 49.99%;
+    }
+  </style>
+  
   <template>
     <!-- local DOM for your element -->
     <sc-model id="product-name" resource-type="Product" resource-id="{{productId}}" resource-field="name" resource-value="{{productName}}"></sc-model>
@@ -9,16 +36,33 @@
     <sc-model id="product-price" resource-type="Product" resource-id="{{productId}}" resource-field="price" resource-value="{{productPrice}}"></sc-model>
     <sc-model id="product-desc" resource-type="Product" resource-id="{{productId}}" resource-field="desc" resource-value="{{productDesc}}"></sc-model>
     
-    <h2>{{productName}}</h2>
-    <div>
-      <span>Qty:</span><input type="text" value="{{productQty}}" on-change="saveValue" data-save-to="product-qty">
-    <div>
-    <div>
-      <span>Price:</span><input type="text" value="{{productPrice}}" on-change="saveValue" data-save-to="product-price">
-    <div>
-    <div>
-      <span>Description:</span><input type="text" value="{{productDesc}}" on-change="saveValue" data-save-to="product-desc">
-    <div>
+    <div class="content-container">
+      <h2 class="content-row heading">{{productName}}</h2>
+      <div class="content-row">
+        <div class="content-col">
+          Qty:
+        </div>
+        <div class="content-col">
+          <input type="text" value="{{productQty}}" on-change="saveValue" data-save-to="product-qty">
+        </div>
+      </div>
+      <div class="content-row">
+        <div class="content-col">
+          Price:
+        </div>
+        <div class="content-col">
+          <input type="text" value="{{productPrice}}" on-change="saveValue" data-save-to="product-price">
+        </div>
+      </div>
+      <div class="content-row">
+        <div class="content-col">
+          Description:
+        </div>
+        <div class="content-col">
+          <input type="text" value="{{productDesc}}" on-change="saveValue" data-save-to="product-desc">
+        </div>
+      </div>
+    </div>
   </template>
 
   <script>
