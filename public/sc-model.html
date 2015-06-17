@@ -85,6 +85,8 @@
       },
       
       saveValue: function (event, newValue) {
+        this.resourceValue = newValue;
+      
         var query = {
           type: this.resourceType,
           id: this.resourceId,
