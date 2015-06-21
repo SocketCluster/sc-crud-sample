@@ -21,9 +21,7 @@ module.exports.run = function (worker) {
         // Prevent publishing back to publisher for efficiency reasons
         next(true);
       } else {
-        // Remove the 'from' property from the outgoing publish packet
-        delete data.from;
-        next(null);
+        next();
       }
     }
   );
@@ -63,15 +61,12 @@ module.exports.run = function (worker) {
       scServer.global.set(deepKey, query.value, function (err) {
         if (!err) {
           var channelName;
-          
           if (query.field) {
             var publishPacket = {
               from: socket.id,
               value: query.value
             };
-            //setTimeout(function () {
             scServer.global.publish(query.type + '/' + query.id + '/' + query.field, publishPacket);
-            //}, 1000);
           }
         }
         callback(err);
