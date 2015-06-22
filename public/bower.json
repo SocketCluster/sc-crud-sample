@@ -22,6 +22,10 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#~1.0.3"
+    "polymer": "Polymer/polymer#~1.0.3",
+    "app-router": "~2.6.1"
+  },
+  "resolutions": {
+    "webcomponentsjs": "^0.7.2"
   }
 }

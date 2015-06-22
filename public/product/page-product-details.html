@@ -4,11 +4,16 @@
 <dom-module id="page-product-details">
   <style>
     .heading {
+      display: inline-block;
       margin-bottom: 30px;
     }
     
+    .content-body {
+      width: 500px;
+    }
+    
     .content-container {
-      width: 400px;
+      width: 100%;
       display: flex;
       -webkit-display: flex;
       flex-direction: column;
@@ -37,29 +42,31 @@
     <sc-model id="product-desc" resource-type="Product" resource-id="{{productId}}" resource-field="desc" resource-value="{{productDesc}}"></sc-model>
     
     <div class="content-container">
-      <h2 class="content-row heading">{{productName}}</h2>
-      <div class="content-row">
-        <div class="content-col">
-          Qty:
+      <h2 class="content-row heading">#<span>{{productId}}</span>&nbsp;-&nbsp;<span>{{productName}}</span></h2>
+      <div class="content-body">
+        <div class="content-row">
+          <div class="content-col">
+            Qty:
+          </div>
+          <div class="content-col">
+            <input type="text" value="{{productQty}}" on-change="saveValue" data-save-to="product-qty">
+          </div>
         </div>
-        <div class="content-col">
-          <input type="text" value="{{productQty}}" on-input="saveValue" data-save-to="product-qty">
+        <div class="content-row">
+          <div class="content-col">
+            Price:
+          </div>
+          <div class="content-col">
+            <input type="text" value="{{productPrice}}" on-change="saveValue" data-save-to="product-price">
+          </div>
         </div>
-      </div>
-      <div class="content-row">
-        <div class="content-col">
-          Price:
-        </div>
-        <div class="content-col">
-          <input type="text" value="{{productPrice}}" on-input="saveValue" data-save-to="product-price">
-        </div>
-      </div>
-      <div class="content-row">
-        <div class="content-col">
-          Description:
-        </div>
-        <div class="content-col">
-          <input type="text" value="{{productDesc}}" on-input="saveValue" data-save-to="product-desc">
+        <div class="content-row">
+          <div class="content-col">
+            Description:
+          </div>
+          <div class="content-col">
+            <input type="text" value="{{productDesc}}" on-change="saveValue" data-save-to="product-desc">
+          </div>
         </div>
       </div>
     </div>

@@ -8,8 +8,12 @@
     
     <script src="/bower_components/webcomponentsjs/webcomponents.min.js"></script>
     <link rel="import" href="/product/page-product-details.html">
+    <link rel="import" href="/bower_components/app-router/app-router.html">
   </head>
   <body>
-    <page-product-details></page-product-details>
+    <app-router>
+      <app-route path="/category/:categoryId/product/:productId" import="/product/page-product-details.html"></app-route>
+      <app-route path="*" import="/product/page-product-details.html"></app-route>
+    </app-router>
   </body>
 </html>

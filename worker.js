@@ -35,6 +35,13 @@ module.exports.run = function (worker) {
       qty: 6,
       price: 649.95,
       desc: 'A smartphone by Google'
+    },
+    2: {
+      id: 2,
+      name: 'Apple iPhone 6',
+      qty: 14,
+      price: 999.00,
+      desc: 'A smartphone by Apple'
     }
   };
   
