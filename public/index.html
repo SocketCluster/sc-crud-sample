@@ -8,12 +8,12 @@
     
     <script src="/bower_components/webcomponentsjs/webcomponents.min.js"></script>
     <link rel="import" href="/product/page-product-details.html">
-    <link rel="import" href="/bower_components/app-router/app-router.html">
+    <link rel="import" href="/app-router.html">
   </head>
-  <body>
+  <body style="width: 100%; height: 100%; overflow-x: hidden;">
     <app-router>
-      <app-route path="/category/:categoryId/product/:productId" import="/product/page-product-details.html"></app-route>
-      <app-route path="*" import="/product/page-product-details.html"></app-route>
+      <page-product-details path="/category/:categoryId/product/:productId"></page-product-details>
+      <neon-animatable path="*">This is a page</neon-animatable>
     </app-router>
   </body>
 </html>

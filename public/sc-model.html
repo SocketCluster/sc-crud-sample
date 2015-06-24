@@ -16,13 +16,16 @@
       
       properties: {
         resourceType: {
-          type: String
+          type: String,
+          observer: 'loadValue'
         },
         resourceId: {
-          type: Number
+          type: Number,
+          observer: 'loadValue'
         },
         resourceField: {
-          type: String
+          type: String,
+          observer: 'loadValue'
         },
         resourceValue: {
           type: Object,
@@ -37,51 +40,59 @@
       },
       
       attached: function () {
+        this.loadValue();
+      },
+      
+      loadValue: function () {
         var self = this;
         
-        var sourcePath;
-        if (this.resourceField) {
-          sourcePath = this.resourceType + '/' + this.resourceId + '/' + this.resourceField;
-        } else if (this.resourceId) {
-          sourcePath = this.resourceType + '/' + this.resourceId;
-        } else {
-          sourcePath = this.resourceType;
-        }
-        
-        var query = {
-          type: this.resourceType,
-          id: this.resourceId,
-          field: this.resourceField
-        };
-        
-        // Get the initial value for the model
-        var loadValue = function () {
-          self.socket.emit('get', query, function (err, data) {
-            if (err) {
-              // TODO: Handle error
-            } else {
-              self.resourceValue = data;
-            }
+        if (this.socket) {
+          this.cleanupChannel();
+          
+          var sourcePath;
+          if (this.resourceField) {
+            sourcePath = this.resourceType + '/' + this.resourceId + '/' + this.resourceField;
+          } else if (this.resourceId) {
+            sourcePath = this.resourceType + '/' + this.resourceId;
+          } else {
+            sourcePath = this.resourceType;
+          }
+          
+          var query = {
+            type: this.resourceType,
+            id: this.resourceId,
+            field: this.resourceField
+          };
+          
+          // Get the initial value for the model
+          var loadData = function () {
+            self.socket.emit('get', query, function (err, data) {
+              if (err) {
+                // TODO: Handle error
+              } else {
+                self.resourceValue = data;
+              }
+            });
+          };
+          
+          // This is to account for socket reconnects - After recovering from a lost connection,
+          // we will re-fetch the whole value to make sure that we haven't missed any updates made to it
+          this.socket.on('connect', function (status) {
+            loadData();
           });
-        };
-        
-        // This is to account for socket reconnects - After recovering from a lost connection,
-        // we will re-fetch the whole value to make sure that we haven't missed any updates made to it
-        this.socket.on('connect', function (status) {
-          loadValue();
-        });
-        
-        if (this.socket.state == 'open') {
-          loadValue();
+          
+          if (this.socket.state == 'open') {
+            loadData();
+          }
+          
+          // Subscribe to further changes while this model is active
+          this.channel = this.socket.subscribe(sourcePath);
+          
+          // Consume the realtime channel data as it arrives
+          this.channel.watch(function (packet) {
+            self.resourceValue = packet.value;
+          });
         }
-        
-        // Subscribe to further changes while this model is active
-        this.channel = this.socket.subscribe(sourcePath);
-        
-        // Consume the realtime channel data as it arrives
-        this.channel.watch(function (packet) {
-          self.resourceValue = packet.value;
-        });
       },
       
       saveValue: function (event, newValue) {
@@ -101,9 +112,15 @@
         });
       },
       
+      cleanupChannel: function () {
+        if (this.channel) {
+          this.channel.unsubscribe();
+          this.channel.unwatch();
+        }
+      },
+      
       detached: function () {
-        this.channel.unsubscribe();
-        this.channel.unwatch();
+        this.cleanupChannel();
       }
     });
   </script>
