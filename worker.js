@@ -15,19 +15,34 @@ module.exports.run = function (worker) {
 
   httpServer.on('request', app);
   
-  scServer.addMiddleware(scServer.MIDDLEWARE_PUBLISH_OUT,
-    function (socket, channel, data, next) {
-      if (data.from == socket.id) {
-        // Prevent publishing back to publisher for efficiency reasons
-        next(true);
-      } else {
-        next();
-      }
+  // Hardcoded dummy data
+  var categories = {
+    1: {
+      id: 1,
+      name: 'Smartphones',
+      desc: 'Handheld mobile devices',
+      products: [1, 2]
+    },
+    2: {
+      id: 2,
+      name: 'Tablets',
+      desc: 'Mobile tablet devices'
+    },
+    3: {
+      id: 3,
+      name: 'Desktops',
+      desc: 'Desktop computers'
+    },
+    4: {
+      id: 4,
+      name: 'Laptops',
+      desc: 'Laptops computers'
     }
-  );
-
-  var count = 0;
+  };
   
+  scServer.global.set('Category', categories);
+  
+  // Hardcoded dummy data
   var products = {
     1: {
       id: 1,
@@ -70,7 +85,6 @@ module.exports.run = function (worker) {
           var channelName;
           if (query.field) {
             var publishPacket = {
-              from: socket.id,
               value: query.value
             };
             scServer.global.publish(query.type + '/' + query.id + '/' + query.field, publishPacket);

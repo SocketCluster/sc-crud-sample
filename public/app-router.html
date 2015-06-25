@@ -7,7 +7,7 @@
 
 <dom-module id="app-router">
   <template>
-    <neon-animated-pages id="pages" class="flex" selected="[[selected]]" entry-animation="slide-from-right-animation" exit-animation="slide-left-animation">
+    <neon-animated-pages id="pages" class="flex" selected="[[selected]]" entry-animation="fade-in-animation" exit-animation="fade-out-animation">
       <content id="content"></content>
     </neon-animated-pages>
   </template>
@@ -17,8 +17,7 @@
       is: 'app-router',
       properties: {
         selected: {
-          type: Number,
-          value: 0
+          type: Number
         }
       },
       attached: function () {

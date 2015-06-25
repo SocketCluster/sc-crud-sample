@@ -11,7 +11,7 @@
       is: 'sc-model',
       
       listeners: {
-        'save': 'saveValue'
+        save: 'saveValue'
       },
       
       properties: {
@@ -87,11 +87,12 @@
           
           // Subscribe to further changes while this model is active
           this.channel = this.socket.subscribe(sourcePath);
+          this.watcher = function (packet) {
+            self.resourceValue = packet.value;
+          };
           
           // Consume the realtime channel data as it arrives
-          this.channel.watch(function (packet) {
-            self.resourceValue = packet.value;
-          });
+          this.channel.watch(this.watcher);
         }
       },
       
@@ -114,8 +115,10 @@
       
       cleanupChannel: function () {
         if (this.channel) {
-          this.channel.unsubscribe();
-          this.channel.unwatch();
+          this.channel.unwatch(this.watcher);
+          if (!this.channel.watchers().length) {
+            this.channel.unsubscribe();
+          }
         }
       },
       

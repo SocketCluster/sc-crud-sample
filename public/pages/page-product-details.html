@@ -43,6 +43,7 @@
     <sc-model id="product-desc" resource-type="Product" resource-id="{{productId}}" resource-field="desc" resource-value="{{productDesc}}"></sc-model>
     
     <div class="content-container">
+      <a href="{{computeCategoryDetailsUrl(categoryId)}}"><< Back to parent category</a>
       <h2 class="content-row heading">#<span>{{productId}}</span>&nbsp;-&nbsp;<span>{{productName}}</span></h2>
       <div class="content-body">
         <div class="content-row">
@@ -85,7 +86,9 @@
 
       properties: {
         // declare properties for the element's public API
-        
+        categoryId: {
+          type: Number
+        },
         productId: {
           type: Number,
           value: 1
@@ -99,12 +102,13 @@
         productPrice: {
           type: Number
         },
-        productDescVersion: {
-          type: Number
-        },
         productDesc: {
           type: String
         }
+      },
+      
+      computeCategoryDetailsUrl: function (categoryId) {
+        return '#!/category/' + categoryId;
       },
       
       saveValue: function (event) {
