@@ -10,12 +10,13 @@
     <link rel="import" href="/app-router.html">
     <link rel="import" href="/pages/page-product-details.html">
     <link rel="import" href="/pages/page-category-details.html">
+    <link rel="import" href="/pages/page-category-list.html">
   </head>
   <body style="width: 100%; height: 100%; overflow-x: hidden;">
     <app-router>
       <page-product-details path="/category/:categoryId/product/:productId"></page-product-details>
       <page-category-details path="/category/:categoryId"></page-category-details>
-      <page-category-details path="*"></page-category-details>
+      <page-category-list path="*"></page-category-list>
     </app-router>
   </body>
 </html>

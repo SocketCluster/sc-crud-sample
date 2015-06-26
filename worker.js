@@ -68,14 +68,31 @@ module.exports.run = function (worker) {
   scServer.on('connection', function (socket) {
   
     socket.on('get', function (query, callback) {
-      var deepKey = [query.type, query.id];
-      if (query.field) {
-        deepKey.push(query.field);
+      var deepKey = [query.type];
+      if (query.id) {
+        deepKey.push(query.id);
+        
+        if (query.field) {
+          deepKey.push(query.field);
+        }
       }
-      scServer.global.get(deepKey, callback);
+      scServer.global.get(deepKey, function (err, data) {
+        if (query.id) {
+          callback(err, data);
+        } else {
+          var resultAsArray = [];
+          for (var i in data) {
+            if (data.hasOwnProperty(i)) {
+              resultAsArray.push(data[i]);
+            }
+          }
+          callback(err, resultAsArray);
+        }
+      });
     });
     
     socket.on('set', function (query, callback) {
+      // TODO: Allow saving whole objects or an entire collection
       var deepKey = [query.type, query.id];
       if (query.field) {
         deepKey.push(query.field);

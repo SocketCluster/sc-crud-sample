@@ -49,6 +49,7 @@
     </template>
     
     <div class="content-container">
+      <a href="#!/"><< Back to category list</a>
       <h2 class="content-row heading">{{categoryName}}</h2>
       <p>
         <h4>Category description:</h4>
@@ -113,8 +114,10 @@
       
       computeProducts: function (categoryProductIds) {
         var computedProducts = [];
-        for (var i = 0; i < categoryProductIds.length; i++) {
-          computedProducts.push({id: categoryProductIds[i]});
+        if (categoryProductIds) {
+          for (var i = 0; i < categoryProductIds.length; i++) {
+            computedProducts.push({id: categoryProductIds[i]});
+          }
         }
         return computedProducts;
       },
@@ -125,10 +128,6 @@
       
       hasNameFilter: function (item) {
         return !!item.name;
-      },
-      
-      test: function (value) {
-        console.log(111, value);
       },
       
       saveValue: function (event) {
