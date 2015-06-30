@@ -67,6 +67,17 @@ module.exports.run = function (worker) {
   */
   scServer.on('connection', function (socket) {
   
+    socket.on('login', function (details, res) {
+      if (details.username == 'bob' && details.password == '123') {
+        res();
+      } else {
+        // This is not an error.
+        // We are simply rejecting the login - So we will 
+        // leave the first (error) argument as null.
+        res(null, 'Invalid username or password');
+      }
+    });
+  
     socket.on('get', function (query, callback) {
       var deepKey = [query.type];
       if (query.id) {
