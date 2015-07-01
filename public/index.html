@@ -7,18 +7,9 @@
     <link rel="stylesheet" type="text/css" href="/libs/bootstrap/css/bootstrap.min.css">
     
     <script src="/bower_components/webcomponentsjs/webcomponents.min.js"></script>
-    <link rel="import" href="/app-router.html">
-    <link rel="import" href="/pages/page-product-details.html">
-    <link rel="import" href="/pages/page-category-details.html">
-    <link rel="import" href="/pages/page-category-list.html">
-    <link rel="import" href="/pages/page-login.html">
+    <link rel="import" href="/app-inventory.html">
   </head>
   <body style="width: 100%; height: 100%; overflow-x: hidden;">
-    <app-router>
-      <page-product-details path="/category/:categoryId/product/:productId"></page-product-details>
-      <page-category-details path="/category/:categoryId"></page-category-details>
-      <page-login path="/login"></page-login>
-      <page-category-list path="*"></page-category-list>
-    </app-router>
+    <app-inventory></app-inventory>
   </body>
 </html>

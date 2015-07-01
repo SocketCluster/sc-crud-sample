@@ -5,11 +5,6 @@
   <template></template>
 
   <script>
-    // This makes the socket object accessible globally on window.
-    // we will allow this for debugging/convenience.
-    
-    var socket = socketCluster.connect();
-  
     Polymer({
       is: 'sc-socket',
       
@@ -17,8 +12,14 @@
         socket: {
           type: Object,
           notify : true,
-          readOnly: true,
-          value: socket
+          value: function () {
+            if (!window.scSocket) {
+              // This makes the socket object accessible globally on window.
+              // we will allow this for debugging/convenience.
+              window.scSocket = socketCluster.connect();
+            }
+            return window.scSocket;
+          }
         }
       }
     });

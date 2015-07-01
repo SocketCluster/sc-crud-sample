@@ -46,9 +46,10 @@
   </style>
   
   <template>
-    <sc-socket socket="{{socket}}"></sc-socket>
-    
     <!-- local DOM for your element -->
+    
+    <sc-socket socket="{{socket}}"></sc-socket>
+
     <div class="content-container">
       <h2 class="content-row heading">Login</h2>
       <div class="content-body">
@@ -60,7 +61,7 @@
             Username:
           </div>
           <div class="content-col">
-            <input type="text" value="{{username::input}}">
+            <input type="text" value="{{username::input}}" on-keydown="keyPressed">
           </div>
         </div>
         <div class="content-row">
@@ -68,7 +69,7 @@
             Password:
           </div>
           <div class="content-col">
-            <input type="text" value="{{password::input}}">
+            <input type="text" value="{{password::input}}" on-keydown="keyPressed">
           </div>
         </div>
         <div class="content-row">
@@ -91,7 +92,8 @@
       properties: {
         // declare properties for the element's public API
         username: {
-          type: String
+          type: String,
+          notify: true
         },
         password: {
           type: String
@@ -101,10 +103,20 @@
         },
         socket: {
           type: Object
+        },
+        isAuthenticated: {
+          type: Boolean,
+          notify: true
         }
       },
       
-      login: function (event) {
+      keyPressed: function (e) {
+        if (e.keyCode == 13) {
+          this.login();
+        }
+      },
+      
+      login: function () {
         var self = this;
         
         var details = {
@@ -114,11 +126,13 @@
         this.socket.emit('login', details, function (err, failure) {
           if (err) {
             self.error = 'Failed to login due to error: ' + err;
+            self.isAuthenticated = false;
           } else if (failure) {
             self.error = failure;
+            self.isAuthenticated = false;
           } else {
             self.error = '';
-            location.hash = '#!/';
+            self.isAuthenticated = true;
           }
         });
       }

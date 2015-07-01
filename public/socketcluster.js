@@ -197,14 +197,8 @@ var AuthEngine = function () {
 };
 
 AuthEngine.prototype.saveToken = function (name, token, options, callback) {
-  var store = options.persistent ? global.localStorage : global.sessionStorage;
-  var secondaryStore = options.persistent ? global.sessionStorage : global.localStorage;
-  
-  if (store) {
-    store.setItem(name, token);
-    if (secondaryStore) {
-      secondaryStore.removeItem(name);
-    }
+  if (global.localStorage) {
+    global.localStorage.setItem(name, token);
   } else {
     this._internalStorage[name] = token;
   }
@@ -212,14 +206,8 @@ AuthEngine.prototype.saveToken = function (name, token, options, callback) {
 };
 
 AuthEngine.prototype.removeToken = function (name, callback) {
-  var localStore = global.localStorage;
-  var sessionStore = global.sessionStorage;
-  
-  if (localStore) {
-    localStore.removeItem(name);
-  }
-  if (sessionStore) {
-    sessionStore.removeItem(name);
+  if (global.localStorage) {
+    global.localStorage.removeItem(name);
   }
   delete this._internalStorage[name];
   
@@ -227,19 +215,11 @@ AuthEngine.prototype.removeToken = function (name, callback) {
 };
 
 AuthEngine.prototype.loadToken = function (name, callback) {
-  var localStore = global.localStorage;
-  var sessionStore = global.sessionStorage;
   var token;
   
-  // sessionStorage has priority over localStorage since it 
-  // gets cleared when the session ends.
-  if (sessionStore) {
-    token = sessionStore.getItem(name);
-  }
-  if (localStore && token == null) {
-    token = localStore.getItem(name);
-  }
-  if (token == null) {
+  if (global.localStorage) {
+    token = global.localStorage.getItem(name);
+  } else {
     token = this._internalStorage[name] || null;
   }
   callback(null, token);
@@ -507,7 +487,6 @@ SCSocket.prototype._privateEventHandlerMap = {
     
     if (data) {
       var tokenOptions = {
-        persistent: !!data.persistent,
         expiresInMinutes: !!data.expiresInMinutes
       };
       
@@ -524,11 +503,7 @@ SCSocket.prototype._privateEventHandlerMap = {
         }
       };
       
-      if (data.persistent && data.expiresInMinutes != null) {
-        this.auth.saveToken(this.options.authTokenName, data.token, tokenOptions, triggerSetAuthToken);
-      } else {
-        this.auth.saveToken(this.options.authTokenName, data.token, tokenOptions, triggerSetAuthToken);
-      }
+      this.auth.saveToken(this.options.authTokenName, data.token, tokenOptions, triggerSetAuthToken);
     } else {
       response.error('No token data provided with setAuthToken event');
     }
@@ -2106,7 +2081,7 @@ if (WebSocket) ws.prototype = WebSocket.prototype;
 module.exports={
   "name": "socketcluster-client",
   "description": "SocketCluster JavaScript client",
-  "version": "2.2.30",
+  "version": "2.2.33",
   "homepage": "http://socketcluster.io",
   "contributors": [
     {

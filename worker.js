@@ -2,6 +2,8 @@ var fs = require('fs');
 var express = require('express');
 var serveStatic = require('serve-static');
 var path = require('path');
+var dataStore = require('./data_store');
+var middleware = require('./middleware');
 
 module.exports.run = function (worker) {
   console.log('   >> Worker PID:', process.pid);
@@ -15,69 +17,44 @@ module.exports.run = function (worker) {
 
   httpServer.on('request', app);
   
-  // Hardcoded dummy data
-  var categories = {
-    1: {
-      id: 1,
-      name: 'Smartphones',
-      desc: 'Handheld mobile devices',
-      products: [1, 2]
-    },
-    2: {
-      id: 2,
-      name: 'Tablets',
-      desc: 'Mobile tablet devices'
-    },
-    3: {
-      id: 3,
-      name: 'Desktops',
-      desc: 'Desktop computers'
-    },
-    4: {
-      id: 4,
-      name: 'Laptops',
-      desc: 'Laptops computers'
-    }
-  };
-  
-  scServer.global.set('Category', categories);
-  
-  // Hardcoded dummy data
-  var products = {
-    1: {
-      id: 1,
-      name: 'Google NEXUS 6 32GB',
-      qty: 6,
-      price: 649.95,
-      desc: 'A smartphone by Google'
-    },
-    2: {
-      id: 2,
-      name: 'Apple iPhone 6',
-      qty: 14,
-      price: 999.00,
-      desc: 'A smartphone by Apple'
-    }
-  };
-  
-  scServer.global.set('Product', products);
+  dataStore.attach(scServer);
+  middleware.attach(scServer);
 
+  var tokenExpiresInMinutes = 10;
+  
   /*
     In here we handle our incoming realtime connections and listen for events.
   */
   scServer.on('connection', function (socket) {
-  
-    socket.on('login', function (details, res) {
+    var tokenRenewalIntervalInMilliseconds = Math.round(1000 * 60 * tokenExpiresInMinutes / 3);
+    
+    // Keep renewing the token (if there is one) at a predefined interval to make sure that 
+    // it doesn't expire while the connection is active.
+    var renewAuthTokenInterval = setInterval(function () {
+      var currentToken = socket.getAuthToken();
+      if (currentToken) {
+        socket.setAuthToken(currentToken, {expiresInMinutes: tokenExpiresInMinutes});
+      }
+    }, tokenRenewalIntervalInMilliseconds);
+    
+    socket.once('disconnect', function () {
+      clearInterval(renewAuthTokenInterval);
+    });
+    
+    var validateLoginDetails = function (details, callback) {
       if (details.username == 'bob' && details.password == '123') {
-        res();
+        socket.setAuthToken(details, {expiresInMinutes: tokenExpiresInMinutes});
+        callback();
       } else {
         // This is not an error.
         // We are simply rejecting the login - So we will 
         // leave the first (error) argument as null.
-        res(null, 'Invalid username or password');
+        callback(null, 'Invalid username or password');
       }
-    });
-  
+    };
+    
+    socket.on('login', validateLoginDetails);
+    
     socket.on('get', function (query, callback) {
       var deepKey = [query.type];
       if (query.id) {
