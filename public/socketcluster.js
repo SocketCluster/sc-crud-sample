@@ -364,7 +364,7 @@ var SCSocket = function (options) {
     'kickOut': 1,
     'subscribe': 1,
     'unsubscribe': 1,
-    'setAuthToken': 1,
+    'authenticate': 1,
     'removeAuthToken': 1
   };
   
@@ -486,11 +486,7 @@ SCSocket.prototype._privateEventHandlerMap = {
     var self = this;
     
     if (data) {
-      var tokenOptions = {
-        expiresInMinutes: !!data.expiresInMinutes
-      };
-      
-      var triggerSetAuthToken = function (err) {
+      var triggerAuthenticate = function (err) {
         if (err) {
           // This is a non-fatal error, we don't want to close the connection 
           // because of this but we do want to notify the server and throw an error
@@ -498,14 +494,14 @@ SCSocket.prototype._privateEventHandlerMap = {
           response.error(err.message || err);
           self._onSCError(err);
         } else {
-          SCEmitter.prototype.emit.call(self, 'setAuthToken', data.token);
+          SCEmitter.prototype.emit.call(self, 'authenticate', data.token);
           response.end();
         }
       };
       
-      this.auth.saveToken(this.options.authTokenName, data.token, tokenOptions, triggerSetAuthToken);
+      this.auth.saveToken(this.options.authTokenName, data.token, {}, triggerAuthenticate);
     } else {
-      response.error('No token data provided with setAuthToken event');
+      response.error('No token data provided by #setAuthToken event');
     }
   },
   '#removeAuthToken': function (data, response) {
@@ -588,6 +584,11 @@ SCSocket.prototype.connect = SCSocket.prototype.open = function () {
   }
 };
 
+SCSocket.prototype.reconnect = function () {
+  this.disconnect();
+  this.connect();
+};
+
 SCSocket.prototype.disconnect = function (code, data) {
   code = code || 1000;
   
@@ -602,6 +603,26 @@ SCSocket.prototype.disconnect = function (code, data) {
   } else if (this.state == this.CONNECTING) {
     this.transport.close(code);
   }
+};
+
+// Perform client-initiated authentication by providing an encrypted token string
+SCSocket.prototype.authenticate = function (encryptedAuthToken, callback) {
+  var self = this;
+  
+  this.transport.emit('#authenticate', encryptedAuthToken, function (err, authStatus) {
+    if (err) {
+      callback && callback(err, authStatus);
+    } else {
+      self.auth.saveToken(self.options.authTokenName, encryptedAuthToken, {}, function (err) {
+        callback && callback(err, authStatus);
+        if (err) {
+          self._onSCError(err);
+        } else if (authStatus.isAuthenticated) {
+          SCEmitter.prototype.emit.call(self, 'authenticate', encryptedAuthToken);
+        }
+      });
+    }
+  });
 };
 
 SCSocket.prototype._tryReconnect = function (initialDelay) {
@@ -2081,7 +2102,7 @@ if (WebSocket) ws.prototype = WebSocket.prototype;
 module.exports={
   "name": "socketcluster-client",
   "description": "SocketCluster JavaScript client",
-  "version": "2.2.33",
+  "version": "2.2.37",
   "homepage": "http://socketcluster.io",
   "contributors": [
     {

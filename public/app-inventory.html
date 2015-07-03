@@ -10,6 +10,7 @@
 <dom-module id="app-inventory">
   <template>
     <sc-socket socket="{{socket}}"></sc-socket>
+    
     <template is="dom-if" if="{{isAuthenticated}}">
       <app-router is-authenticated="{{isAuthenticated}}">
         <page-product-details path="/category/:categoryId/product/:productId"></page-product-details>
@@ -43,11 +44,21 @@
         
         window.addEventListener('storage', function (e) {
           // In case the user logged in from a different tab
-          if (e.key == 'socketCluster.authToken' && e.newValue && !self.isAuthenticated) {
-            // Reconnect to re-authenticate with server
-            self.socket.disconnect();
-            self.socket.connect();
+          if (e.key == self.socket.options.authTokenName) {
+            if (self.isAuthenticated) {
+              if (!e.newValue) {
+                self.isAuthenticated = false;
+              }
+            } else if (e.newValue) {
+              self.socket.authenticate(e.newValue, function (err, authStatus) {
+                self.isAuthenticated = authStatus.isAuthenticated;
+              });
+            }
           }
+        });
+        
+        this.socket.on('removeAuthToken', function () {
+          self.isAuthenticated = false;
         });
         
         this.socket.on('logout', function () {
