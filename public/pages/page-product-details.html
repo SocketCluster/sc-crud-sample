@@ -114,7 +114,7 @@
       saveValue: function (event) {
         var targetModelName = event.target.dataset.saveTo;
         var targetModel = this.$[targetModelName];
-        targetModel.fire('save', event.target.value);
+        targetModel.save(event.target.value);
       }
     });
   </script>

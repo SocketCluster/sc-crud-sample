@@ -33,6 +33,13 @@
       display: inline-block;
       width: 100%;
     }
+    
+    .content-col-half {
+      box-sizing: border-box;
+      display: inline-block;
+      width: 50%;
+    }
+    
   </style>
   
   <template>
@@ -42,11 +49,13 @@
     <sc-model id="category-products" resource-type="Category" resource-id="{{categoryId}}" resource-field="products" resource-value="{{categoryProducts}}"></sc-model>
     
     <!-- Generate some models dynamically -->
-    <template is="dom-repeat" items="{{productRows}}">
+    <template is="dom-repeat" items="{{productRows}}" filter="hasIdFilter" observe="id">
       <sc-model resource-type="Product" resource-id="{{item.id}}" resource-field="qty" resource-value="{{item.qty}}"></sc-model>
       <sc-model resource-type="Product" resource-id="{{item.id}}" resource-field="price" resource-value="{{item.price}}"></sc-model>
       <sc-model resource-type="Product" resource-id="{{item.id}}" resource-field="name" resource-value="{{item.name}}"></sc-model>
     </template>
+    
+    <sc-model id="new-product" resource-type="Product" resource-id="{{newProductId}}" resource-field="name"></sc-model>
     
     <div class="content-container">
       <a href="/#!/"><< Back to category list</a>
@@ -66,9 +75,9 @@
                 <th>QTY</th>
                 <th>Price</th>
               </tr>
-              <template is="dom-repeat" items="[[productRows]]" filter="hasNameFilter" observe="name qty price">
+              <template is="dom-repeat" items="{{productRows}}" filter="hasNameFilter" observe="id name qty price">
                 <tr>
-                  <td><a href="{{computeProductDetailsUrl(item)}}">{{item.name}}</a></td>
+                  <td><a href="{{computeProductDetailsUrl(item.id)}}">{{item.name}}</a></td>
                   <td>{{item.qty}}</td>
                   <td>{{item.price}}</td>
                 </tr>
@@ -76,6 +85,14 @@
             </table>
           </div>
         </div>
+        
+        <div class="content-row">
+          <div class="content-col-half">
+            <input type="text" value="{{newProductName::input}}" on-keydown="keyPressed">
+          </div>
+          <div class="content-col-half">
+            <input type="button" class="btn" value="Add product" on-click="addProduct">
+          </div>
       </div>
     </div>
   </template>
@@ -109,31 +126,67 @@
         productRows: {
           type: Array,
           computed: 'computeProducts(categoryProducts)'
+        },
+        newProductName: {
+          type: String,
+          value: ''
         }
       },
       
       computeProducts: function (categoryProductIds) {
-        var computedProducts = [];
+        var computedProducts;
+        
+        if (this.productRows) {
+          var computedProducts = this.productRows.concat();
+        } else {
+          computedProducts = [];
+        }
         if (categoryProductIds) {
           for (var i = 0; i < categoryProductIds.length; i++) {
-            computedProducts.push({id: categoryProductIds[i]});
+            if (!computedProducts[i]) {
+              computedProducts[i] = {id: categoryProductIds[i]};
+            }
           }
         }
         return computedProducts;
       },
       
-      computeProductDetailsUrl: function (product) {
-        return '#!/category/' + this.categoryId + '/product/' + product.id;
+      computeNewProductId: function (productRows) {
+        return productRows.length + 1;
+      },
+      
+      computeProductDetailsUrl: function (productId) {
+        return '#!/category/' + this.categoryId + '/product/' + productId;
       },
       
       hasNameFilter: function (item) {
         return !!item.name;
       },
       
-      saveValue: function (event) {
-        var targetModelName = event.target.dataset.saveTo;
-        var targetModel = this.$[targetModelName];
-        targetModel.fire('save', event.target.value);
+      hasIdFilter: function (item) {
+        return !!item.id;
+      },
+      
+      keyPressed: function (e) {
+        if (e.keyCode == 13) {
+          this.addProduct();
+        }
+      },
+      
+      addProduct: function () {
+        var self = this;
+        
+        var productNameModel = this.$['new-product'];
+        var productListModel = this.$['category-products'];
+        productListModel.add(function (err, newId) {
+          if (err) {
+            // TODO: Handle error
+          } else {
+            self.newProductId = newId;
+            productNameModel.save(self.newProductName);
+            self.newProductName = '';
+          }
+        });
       }
     });
   </script>

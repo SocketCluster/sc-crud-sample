@@ -10,10 +10,6 @@
     Polymer({
       is: 'sc-model',
       
-      listeners: {
-        save: 'saveValue'
-      },
-      
       properties: {
         resourceType: {
           type: String,
@@ -96,23 +92,6 @@
         }
       },
       
-      saveValue: function (event, newValue) {
-        this.resourceValue = newValue;
-      
-        var query = {
-          type: this.resourceType,
-          id: this.resourceId,
-          field: this.resourceField,
-          value: newValue
-        };
-        // Update the model on the server
-        this.socket.emit('set', query, function (err, data) {
-          if (err) {
-            // TODO: Handle error
-          }
-        });
-      },
-      
       cleanupChannel: function () {
         if (this.channel) {
           this.channel.unwatch(this.watcher);
@@ -124,6 +103,30 @@
       
       detached: function () {
         this.cleanupChannel();
+      },
+      
+      save: function (newValue, callback) {
+        this.resourceValue = newValue;
+      
+        var query = {
+          type: this.resourceType,
+          id: this.resourceId,
+          field: this.resourceField,
+          value: newValue
+        };
+        // Update the model on the server
+        this.socket.emit('set', query, callback);
+      },
+      
+      // Only relevant for array/list models
+      add: function (callback) {
+        var query = {
+          type: this.resourceType,
+          id: this.resourceId,
+          field: this.resourceField
+        };
+        // Add new entry to model on the server
+        this.socket.emit('add', query, callback);
       }
     });
   </script>
