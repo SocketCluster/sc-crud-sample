@@ -29,7 +29,7 @@ module.exports.run = function (worker) {
   */
   scServer.on('connection', function (socket) {
     // Authentication logic
-    authentication.attach(socket);
+    authentication.attach(scServer, socket);
     
     // Realtime rest layer to get, set and subscribe to data changes
     realtimeRest.attach(scServer, socket);

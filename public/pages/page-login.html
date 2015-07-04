@@ -69,7 +69,7 @@
             Password:
           </div>
           <div class="content-col">
-            <input type="text" value="{{password::input}}" on-keydown="keyPressed">
+            <input type="password" value="{{password::input}}" on-keydown="keyPressed">
           </div>
         </div>
         <div class="content-row">
@@ -93,10 +93,12 @@
         // declare properties for the element's public API
         username: {
           type: String,
-          notify: true
+          notify: true,
+          value: 'bob'
         },
         password: {
-          type: String
+          type: String,
+          value: 'password123'
         },
         error: {
           type: String
