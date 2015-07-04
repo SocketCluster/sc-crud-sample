@@ -39,11 +39,10 @@
       display: inline-block;
       width: 50%;
     }
-    
   </style>
   
   <template>
-    <!-- local DOM for your element -->
+    <!-- Model components (data sources) for this page -->
     <sc-model id="category-name" resource-type="Category" resource-id="{{categoryId}}" resource-field="name" resource-value="{{categoryName}}"></sc-model>
     <sc-model id="category-desc" resource-type="Category" resource-id="{{categoryId}}" resource-field="desc" resource-value="{{categoryDesc}}"></sc-model>
     <sc-model id="category-products" resource-type="Category" resource-id="{{categoryId}}" resource-field="products" resource-value="{{categoryProducts}}"></sc-model>
