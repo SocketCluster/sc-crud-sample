@@ -11,6 +11,10 @@
       is: 'sc-model',
       
       properties: {
+        modelType: {
+          type: String,
+          value: 'field'
+        },
         resourceType: {
           type: String,
           observer: 'loadValue'
@@ -26,6 +30,11 @@
         resourceValue: {
           type: Object,
           notify: true
+        },
+        resourcePage: {
+          type: Number,
+          value: 0,
+          observer: 'loadValue'
         },
         socket: {
           type: Object
@@ -45,20 +54,25 @@
         if (this.socket) {
           this.cleanupChannel();
           
-          var sourcePath;
-          if (this.resourceField) {
-            sourcePath = this.resourceType + '/' + this.resourceId + '/' + this.resourceField;
-          } else if (this.resourceId) {
-            sourcePath = this.resourceType + '/' + this.resourceId;
-          } else {
-            sourcePath = this.resourceType;
-          }
-          
           var query = {
             type: this.resourceType,
             id: this.resourceId,
             field: this.resourceField
           };
+          
+          var sourcePath = '';
+          if (this.modelType == 'collection') {
+            sourcePath += this.resourcePage + ':';
+            query.page = this.resourcePage;
+          }
+          
+          if (this.resourceField) {
+            sourcePath += this.resourceType + '/' + this.resourceId + '/' + this.resourceField;
+          } else if (this.resourceId) {
+            sourcePath += this.resourceType + '/' + this.resourceId;
+          } else {
+            sourcePath += this.resourceType;
+          }
           
           // Get the initial value for the model
           var loadData = function () {

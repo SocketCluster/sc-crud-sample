@@ -41,7 +41,11 @@ module.exports.run = function (worker) {
     // Authentication logic
     authentication.attach(scServer, socket);
     
+    var restOptions = {
+      pageSize: 5
+    };
+    
     // Realtime rest layer to get, set and subscribe to data changes
-    realtimeRest.attach(scServer, socket);
+    realtimeRest.attach(scServer, socket, restOptions);
   });
 };

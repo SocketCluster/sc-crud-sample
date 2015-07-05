@@ -45,7 +45,7 @@
     <!-- Model components (data sources) for this page -->
     <sc-model id="category-name" resource-type="Category" resource-id="{{categoryId}}" resource-field="name" resource-value="{{categoryName}}"></sc-model>
     <sc-model id="category-desc" resource-type="Category" resource-id="{{categoryId}}" resource-field="desc" resource-value="{{categoryDesc}}"></sc-model>
-    <sc-model id="category-products" resource-type="Category" resource-id="{{categoryId}}" resource-field="products" resource-value="{{categoryProducts}}"></sc-model>
+    <sc-model id="category-products" model-type="collection" resource-page="{{categoryProductsPage}}" resource-type="Category" resource-id="{{categoryId}}" resource-field="products" resource-value="{{categoryProducts}}"></sc-model>
     
     <!-- Generate some models dynamically -->
     <template is="dom-repeat" items="{{productRows}}" filter="hasIdFilter" observe="id">
@@ -92,6 +92,13 @@
           <div class="content-col-half">
             <input type="button" class="btn" value="Add product" on-click="addProduct">
           </div>
+        </div>
+        
+        <div class="content-row">
+          <div class="content-col">
+            <a href="javascript:void(0);" on-click="goToPrevPage">Prev page</a> <span>{{categoryProductsPage}}</span> <a href="javascript:void(0);" on-click="goToNextPage">Next page</a>
+          </div>
+        </div>
       </div>
     </div>
   </template>
@@ -122,9 +129,13 @@
           type: Array,
           value: []
         },
+        categoryProductsPage: {
+          type: Number,
+          value: 0
+        },
         productRows: {
           type: Array,
-          computed: 'computeProducts(categoryProducts)'
+          computed: 'computeProductRows(categoryProducts)'
         },
         newProductName: {
           type: String,
@@ -132,17 +143,22 @@
         }
       },
       
-      computeProducts: function (categoryProductIds) {
-        var computedProducts;
+      goToPrevPage: function () {
+        this.categoryProductsPage--;
+      },
+      
+      goToNextPage: function () {
+        this.categoryProductsPage++;
+      },
+      
+      computeProductRows: function (categoryProductIds) {
+        var computedProducts = [];
         
-        if (this.productRows) {
-          var computedProducts = this.productRows.concat();
-        } else {
-          computedProducts = [];
-        }
         if (categoryProductIds) {
           for (var i = 0; i < categoryProductIds.length; i++) {
-            if (!computedProducts[i]) {
+            if (this.productRows && this.productRows[i] && this.productRows[i].id == categoryProductIds[i]) {
+              computedProducts[i] = this.productRows[i];
+            } else {
               computedProducts[i] = {id: categoryProductIds[i]};
             }
           }
