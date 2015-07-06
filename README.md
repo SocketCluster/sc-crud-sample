@@ -110,5 +110,6 @@ All Polymer front-end code is inside the public/ directory.
 I hope you find this useful.
 
 Jon Dubois
+https://twitter.com/jgrosdubois
 
 \* SocketCluster v1.0 was based on Engine.io (the engine which powers Socket.io).
