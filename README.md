@@ -92,7 +92,7 @@ for many reasons.
 While I was doing all of this, some really good front-end frameworks (AngularJS, EmberJS, CanJS, Polymer, ReactJS...) were being developed. 
 One of the most innovative features which these frameworks were introducing was live data binding. For those who don't know, data binding 
 is a feature which allows you to declaratively add placeholders such as {{somePropertyName}} inside your frontend templates/views 
-to allow them to automagically update when the related properties are changed on the front end (without having to imperatively select specific elements).
+to allow them to automagically update when the related properties are changed in your frontend code (without having to imperatively select specific elements).
 
 While I was getting familiar with data binding with CanJS and AngularJS, I spent a lot of time thinking about how I could extend SocketCluster to 
 leverage those features - It occurred to me that having Pub/Sub channels on the frontend would be a really powerful and scalable way to achieve
