@@ -1,4 +1,9 @@
 module.exports.attach = function (scServer) {
+  /*
+    Note that we are using SC's default in-memory data store (scServer.global) for simplicity 
+    but in a real scenario, you should use a proper database to store persistent data.
+  */
+  
   // Hardcoded dummy data
   
   var categories = {
