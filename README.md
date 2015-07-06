@@ -8,8 +8,8 @@ possible.
 This sample app aims to demonstrate all the cutting edge features that one might want when 
 building a realtime single page app including:
 
-- Authentication
-- Access control
+- Authentication (via JWT tokens)
+- Access control using backend middleware
 - Reactive data binding
 - Realtime REST-like interface
 - Pagination with realtime updates
@@ -18,24 +18,29 @@ This is still work in progress.
 Keep in mind that this app is optimized for cutting-edgeness, not for backwards
 compatibility with older browsers :p
 
+To make the most of this demo, you should open the web app in two different tabs/windows/browsers and
+make updates to the data in realtime.
+
 
 ## Installation
 
 To run this sample:
 
+- Make sure you have Node.js installed (http://nodejs.org/)
 - ```git clone``` this repo
-- Navigate to the sc-sample-inventory directory
+- Navigate to the sc-sample-inventory/ directory
 - Run ```npm install``` (no arguments)
 - Make sure you have bower installed, if not: ```npm install -g bower```
-- Navigate to sc-sample-inventory/public/ directory
+- Navigate to the public/ directory
 - Run ```bower install``` (no arguments)
-- Go to main sc-sample-inventory directory
+- Go back to the main sc-sample-inventory directory
 - Run ```node server```
+- In your browser, go to ```http://localhost:8000/```
 
 
 ## Back Story
 
-SocketCluster v2.0 (and this proof-of-concept project) is the culmination of more than 3 years of work towards my goal of building a 
+SocketCluster v2.0 and this proof-of-concept project are the culmination of more than 3 years of work towards my goal of building a 
 framework to power 'the next generation' of web apps. SocketCluster did not come out of nowhere - It is the successor to the following failed projects:
 
 1. jCombo (PHP/JavaScript full stack framework - https://github.com/jondubois/jcombo/graphs/contributors)
@@ -46,13 +51,16 @@ When I started working towards this goal in January 2012, I wanted to make a ful
 developers to build entire web apps from scratch.
 Before the concept of 'realtime' had even entered my mind, the initial goal was simply to build a framework which would bring frontend and backend 
 logic closer together - This is what my first project jCombo was about; it allowed developers to call server-side PHP methods directly from client-side JavaScript code.
+It also handled other things like script loading, templates, etc...
+
 Unfortunately, nobody really cared much about jCombo - I guess the PHP/JavaScript combination was awkward and it was my first project of this kind 
 so I couldn't really expect it to be a success - In any case, it was a great opportunity to develop my idea/vision of what the next generation of 
 web applications would be like.
 
 Some time after publishing jCombo on GitHub (and having completed a fair bit of work), I learned about Node.js.
-At that point, I started to feel like I had wasted a lot of time trying to make client-side JavaScript play nicely with server-side PHP.
+At that point, I felt like I had wasted a lot of time trying to make client-side JavaScript play nicely with server-side PHP.
 As much as I tried, I couldn't avoid the fact that Node.js was a tool which my project desperately needed.
+
 With the ability to run JavaScript on both the frontend and backend (using Node.js), I would finally be able to seamlessly exchange data between the client and
 server. Socket.io was the module which really sold Node.js to me* - The idea of being able to push data directly to clients was a feature that I had thought
 about but couldn't dream of implementing in PHP :p
@@ -85,8 +93,10 @@ While I was doing all of this, some really good front-end frameworks (AngularJS,
 One of the most innovative features which these frameworks were introducing was live data binding. For those who don't know, data binding 
 is a feature which allows you to declaratively add placeholders such as {{somePropertyName}} inside your frontend templates/views 
 to allow them to automagically update when the related properties are changed on the front end (without having to imperatively select specific elements).
-I spent a lot of time thinking about how I could extend SocketCluster to leverage those features - It occurred to me that having
-client-side Pub/Sub channels would be a really powerful and scalable way to achieve that - So I made pub/sub a central aspect of SC.
+
+While I was getting familiar with data binding with CanJS and AngularJS, I spent a lot of time thinking about how I could extend SocketCluster to 
+leverage those features - It occurred to me that having Pub/Sub channels on the frontend would be a really powerful and scalable way to achieve
+that - So I made pub/sub a central aspect of SC.
 
 The goal of client-side pub/sub in the context of SC is to allow frontend views to declaratively subscribe to data channels - Then, using data binding,
 the view can passively consume/display the data from those channels in realtime as soon as it gets updated on the server.
