@@ -68,7 +68,7 @@ about but couldn't dream of implementing in PHP :p
 After playing around with Node.js some more, I decided to rewrite the entire backend part of jCombo in JavaScript (on top of Node.js).
 I renamed the project to nCombo (then later to Nombo). It was only after I had finished porting all my PHP code to Node.js that 
 I found out about Meteor, then Derby, then SocketStream and all the other full-stack frameworks which were also trying to solve the same 
-problem as I was. This back when the term 'Single Page App' started gaining traction.
+problem as I was. This was back when the term 'Single Page App' started gaining traction.
 
 At that point, I started promoting Nombo on Reddit (/r/node) to see what the community thought of it.
 Based on feedback from Reddit users, I learned the following things:
