@@ -144,7 +144,9 @@
       },
       
       goToPrevPage: function () {
-        this.categoryProductsPage--;
+        if (this.categoryProductsPage > 0) {
+          this.categoryProductsPage--;
+        }
       },
       
       goToNextPage: function () {
