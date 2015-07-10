@@ -27,13 +27,11 @@ make updates to the data in realtime.
 To run this sample:
 
 - Make sure you have Node.js installed (http://nodejs.org/)
-- ```git clone``` this repo
+- ```git clone https://github.com/SocketCluster/sc-sample-inventory.git```
 - Navigate to the sc-sample-inventory/ directory
 - Run ```npm install``` (no arguments)
 - Make sure you have bower installed, if not: ```npm install -g bower```
-- Navigate to the public/ directory
 - Run ```bower install``` (no arguments)
-- Go back to the main sc-sample-inventory directory
 - Run ```node server```
 - In your browser, go to ```http://localhost:8000/```
 
