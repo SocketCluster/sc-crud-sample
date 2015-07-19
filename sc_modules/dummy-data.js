@@ -6,6 +6,16 @@ module.exports.attach = function (scServer) {
   
   // Hardcoded dummy data
   
+  var schema = {
+    Category: {
+      foreignKeys: {
+        products: 'Product'
+      }
+    }
+  };
+  
+  scServer.global.set('Schema', schema);
+  
   var categories = {
     1: {
       id: 1,

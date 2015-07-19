@@ -59,35 +59,49 @@ module.exports.attach = function (scServer, socket, options) {
     var deepKey = [query.type, query.id, query.field];
     
     var queryFn = function (DataMap) {
-      var nextId = DataMap.count(deepKey) + 1;
-      DataMap.add(deepKey, nextId);
-      
-      var pageNumber = Math.floor((nextId - 1) / pageSize);
-      var startIndex = pageNumber * pageSize;
-      var endIndex = startIndex + pageSize;
-      
-      return {
-        pageNumber: pageNumber,
-        id: nextId,
-        list: DataMap.getRange(deepKey, startIndex, endIndex)
-      };
+      var foreignKey = DataMap.get(foreignKeyPath);
+      if (foreignKey) {
+        var collectionLength = DataMap.count(deepKey);
+        var nextId = DataMap.count(foreignKey) + 1;
+        
+        DataMap.add(deepKey, nextId);
+        
+        var pageNumber = Math.floor(collectionLength / pageSize);
+        var startIndex = pageNumber * pageSize;
+        var endIndex = startIndex + pageSize;
+        
+        return {
+          pageNumber: pageNumber,
+          id: nextId,
+          list: DataMap.getRange(deepKey, startIndex, endIndex)
+        };
+      } else {
+        return {
+          error: 'Invalid foreign key'
+        };
+      }
     };
-    
+  
     queryFn.data = {
       deepKey: deepKey,
-      pageSize: options.pageSize
+      pageSize: options.pageSize,
+      foreignKeyPath: ['Schema', query.type, 'foreignKeys', query.field]
     };
     
     scServer.global.run(queryFn, function (err, result) {
-      if (!err) {
-        // TODO: Only send back the addition instead of the whole list
-        var publishPacket = {
-          value: result.list
-        };
-        
-        scServer.global.publish(result.pageNumber + ':' + query.type + '/' + query.id + '/' + query.field, publishPacket);
+      if (result.error) {
+        callback('Collection in field ' + query.field + ' of type ' + query.type + ' is not associated with a valid foreign key');
+      } else {
+        if (!err) {
+          // TODO: Only send back the addition instead of the whole list
+          var publishPacket = {
+            value: result.list
+          };
+          
+          scServer.global.publish(result.pageNumber + ':' + query.type + '/' + query.id + '/' + query.field, publishPacket);
+        }
+        callback(err, result.id);
       }
-      callback(err, result.id);
     });
   });
 };
