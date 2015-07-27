@@ -98,7 +98,18 @@
           // Subscribe to further changes while this model is active
           this.channel = this.socket.subscribe(sourcePath);
           this.watcher = function (packet) {
-            self.resourceValue = packet.value;
+            if (packet.type == 'add') {
+              if (self.resourceValue && self.resourceValue.length) {
+                self.resourceValue = self.resourceValue.slice(0, packet.index)
+                  .concat([packet.value])
+                  .concat(self.resourceValue.slice(packet.index))
+                  .slice(0, packet.pageSize);
+              } else {
+                self.resourceValue = [packet.value];
+              }
+            } else {
+              self.resourceValue = packet.value;
+            }
           };
           
           // Consume the realtime channel data as it arrives

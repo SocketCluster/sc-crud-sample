@@ -46,6 +46,7 @@ module.exports.attach = function (scServer, socket, options) {
       if (!err) {
         if (query.field) {
           var publishPacket = {
+            type: 'set',
             value: query.value
           };
           scServer.global.publish(query.type + '/' + query.id + '/' + query.field, publishPacket);
@@ -67,13 +68,12 @@ module.exports.attach = function (scServer, socket, options) {
         DataMap.add(deepKey, nextId);
         
         var pageNumber = Math.floor(collectionLength / pageSize);
-        var startIndex = pageNumber * pageSize;
-        var endIndex = startIndex + pageSize;
+        var pageIndex = collectionLength % pageSize;
         
         return {
           pageNumber: pageNumber,
-          id: nextId,
-          list: DataMap.getRange(deepKey, startIndex, endIndex)
+          index: pageIndex,
+          value: nextId
         };
       } else {
         return {
@@ -93,14 +93,16 @@ module.exports.attach = function (scServer, socket, options) {
         callback('Collection in field ' + query.field + ' of type ' + query.type + ' is not associated with a valid foreign key');
       } else {
         if (!err) {
-          // TODO: Only send back the addition instead of the whole list
           var publishPacket = {
-            value: result.list
+            type: 'add',
+            index: result.index,
+            value: result.value,
+            pageSize: options.pageSize
           };
           
           scServer.global.publish(result.pageNumber + ':' + query.type + '/' + query.id + '/' + query.field, publishPacket);
         }
-        callback(err, result.id);
+        callback(err, result.value);
       }
     });
   });
