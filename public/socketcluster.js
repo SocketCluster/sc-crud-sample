@@ -1,4 +1,4 @@
-!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.socketCluster=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.socketCluster = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -190,7 +190,7 @@ module.exports.connect = function (options) {
 
 module.exports.version = pkg.version;
 
-},{"./lib/scsocket":8,"./package.json":18,"sc-emitter":14}],5:[function(require,module,exports){
+},{"./lib/scsocket":8,"./package.json":19,"sc-emitter":14}],5:[function(require,module,exports){
 (function (global){
 var AuthEngine = function () {
   this._internalStorage = {};
@@ -372,7 +372,6 @@ var SCSocket = function (options) {
   
   this._emitBuffer = new LinkedList();
   this._channels = {};
-  this._base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
   
   this.options = opts;
   
@@ -609,7 +608,7 @@ SCSocket.prototype.disconnect = function (code, data) {
 SCSocket.prototype.authenticate = function (encryptedAuthToken, callback) {
   var self = this;
   
-  this.transport.emit('#authenticate', encryptedAuthToken, function (err, authStatus) {
+  this.emit('#authenticate', encryptedAuthToken, function (err, authStatus) {
     if (err) {
       callback && callback(err, authStatus);
     } else {
@@ -1040,6 +1039,7 @@ module.exports = SCSocket;
 },{"./auth":5,"./objectcreate":6,"./response":7,"./sctransport":9,"linked-list":11,"querystring":3,"sc-channel":12,"sc-emitter":14}],9:[function(require,module,exports){
 var WebSocket = require('ws');
 var SCEmitter = require('sc-emitter').SCEmitter;
+var formatter = require('sc-formatter');
 var Response = require('./response').Response;
 var querystring = require('querystring');
 
@@ -1312,77 +1312,12 @@ SCTransport.prototype.cancelPendingResponse = function (cid) {
   delete this._callbackMap[cid];
 };
 
-SCTransport.prototype._isOwnDescendant = function (object, ancestors) {
-  for (var i in ancestors) {
-    if (ancestors[i] === object) {
-      return true;
-    }
-  }
-  return false;
-};
-
-SCTransport.prototype._arrayBufferToBase64 = function (arraybuffer) {
-  var chars = this._base64Chars;
-  var bytes = new Uint8Array(arraybuffer);
-  var len = bytes.length;
-  var base64 = '';
-
-  for (var i = 0; i < len; i += 3) {
-    base64 += chars[bytes[i] >> 2];
-    base64 += chars[((bytes[i] & 3) << 4) | (bytes[i + 1] >> 4)];
-    base64 += chars[((bytes[i + 1] & 15) << 2) | (bytes[i + 2] >> 6)];
-    base64 += chars[bytes[i + 2] & 63];
-  }
-
-  if ((len % 3) === 2) {
-    base64 = base64.substring(0, base64.length - 1) + '=';
-  } else if (len % 3 === 1) {
-    base64 = base64.substring(0, base64.length - 2) + '==';
-  }
-
-  return base64;
-};
-
-SCTransport.prototype._convertBuffersToBase64 = function (object, ancestors) {
-  if (!ancestors) {
-    ancestors = [];
-  }
-  if (this._isOwnDescendant(object, ancestors)) {
-    throw new Error('Cannot traverse circular structure');
-  }
-  var newAncestors = ancestors.concat([object]);
-  
-  if (typeof ArrayBuffer != 'undefined' && object instanceof ArrayBuffer) {
-    return {
-      base64: true,
-      data: this._arrayBufferToBase64(object)
-    };
-  }
-  
-  if (object instanceof Array) {
-    var base64Array = [];
-    for (var i in object) {
-      base64Array[i] = this._convertBuffersToBase64(object[i], newAncestors);
-    }
-    return base64Array;
-  }
-  if (object instanceof Object) {
-    var base64Object = {};
-    for (var j in object) {
-      base64Object[j] = this._convertBuffersToBase64(object[j], newAncestors);
-    }
-    return base64Object;
-  }
-  
-  return object;
-};
-
 SCTransport.prototype.parse = function (message) {
-  return JSON.parse(message);
+  return formatter.parse(message);
 };
 
 SCTransport.prototype.stringify = function (object) {
-  return JSON.stringify(this._convertBuffersToBase64(object));
+  return formatter.stringify(object);
 };
 
 SCTransport.prototype.send = function (data) {
@@ -1399,7 +1334,7 @@ SCTransport.prototype.sendObject = function (object) {
 
 module.exports.SCTransport = SCTransport;
 
-},{"./response":7,"querystring":3,"sc-emitter":14,"ws":17}],10:[function(require,module,exports){
+},{"./response":7,"querystring":3,"sc-emitter":14,"sc-formatter":17,"ws":18}],10:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1854,8 +1789,8 @@ SCChannel.prototype.destroy = function () {
 module.exports.SCChannel = SCChannel;
 
 },{"./objectcreate":13,"sc-emitter":14}],13:[function(require,module,exports){
-module.exports=require(6)
-},{"C:\\node\\sc\\node_modules\\socketcluster-client\\lib\\objectcreate.js":6}],14:[function(require,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"dup":6}],14:[function(require,module,exports){
 var Emitter = require('component-emitter');
 
 if (!Object.create) {
@@ -2052,8 +1987,91 @@ Emitter.prototype.hasListeners = function(event){
 };
 
 },{}],16:[function(require,module,exports){
-module.exports=require(6)
-},{"C:\\node\\sc\\node_modules\\socketcluster-client\\lib\\objectcreate.js":6}],17:[function(require,module,exports){
+arguments[4][6][0].apply(exports,arguments)
+},{"dup":6}],17:[function(require,module,exports){
+(function (global){
+var base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+module.exports.parse = function (input) {
+  if (input == null) {
+   return null;
+  }
+  var message = input.toString();
+  
+  try {
+    return JSON.parse(message);
+  } catch (err) {}
+  return message;
+};
+
+var arrayBufferToBase64 = function (arraybuffer) {
+  var bytes = new Uint8Array(arraybuffer);
+  var len = bytes.length;
+  var base64 = '';
+
+  for (var i = 0; i < len; i += 3) {
+    base64 += base64Chars[bytes[i] >> 2];
+    base64 += base64Chars[((bytes[i] & 3) << 4) | (bytes[i + 1] >> 4)];
+    base64 += base64Chars[((bytes[i + 1] & 15) << 2) | (bytes[i + 2] >> 6)];
+    base64 += base64Chars[bytes[i + 2] & 63];
+  }
+
+  if ((len % 3) === 2) {
+    base64 = base64.substring(0, base64.length - 1) + '=';
+  } else if (len % 3 === 1) {
+    base64 = base64.substring(0, base64.length - 2) + '==';
+  }
+
+  return base64;
+};
+
+var isOwnDescendant = function (object, ancestors) {
+  for (var i in ancestors) {
+    if (ancestors[i] === object) {
+      return true;
+    }
+  }
+  return false;
+};
+
+var convertBuffersToBase64 = function (object, ancestors) {
+  if (!ancestors) {
+    ancestors = [];
+  }
+  if (isOwnDescendant(object, ancestors)) {
+    throw new Error('Cannot traverse circular structure');
+  }
+  var newAncestors = ancestors.concat([object]);
+  
+  if (global.ArrayBuffer && object instanceof global.ArrayBuffer) {
+    object = {
+      base64: true,
+      data: arrayBufferToBase64(object)
+    };
+  } else if (global.Buffer && object instanceof global.Buffer) {
+    object = {
+      base64: true,
+      data: object.toString('base64')
+    };
+  } else if (object instanceof Array) {
+    for (var i in object) {
+      object[i] = convertBuffersToBase64(object[i], newAncestors);
+    }
+  } else if (object instanceof Object) {
+    for (var j in object) {
+      object[j] = convertBuffersToBase64(object[j], newAncestors);
+    }
+  }
+  return object;
+};
+
+module.exports.stringify = function (object) {
+  var base64Object = convertBuffersToBase64(object);
+  return JSON.stringify(base64Object);
+};
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],18:[function(require,module,exports){
 
 /**
  * Module dependencies.
@@ -2098,11 +2116,11 @@ function ws(uri, protocols, opts) {
 
 if (WebSocket) ws.prototype = WebSocket.prototype;
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports={
   "name": "socketcluster-client",
   "description": "SocketCluster JavaScript client",
-  "version": "2.2.37",
+  "version": "2.3.3",
   "homepage": "http://socketcluster.io",
   "contributors": [
     {
@@ -2118,7 +2136,8 @@ module.exports={
     "linked-list": "0.1.0",
     "sc-channel": "1.0.x",
     "sc-emitter": "1.0.x",
-    "ws": "0.7.1"
+    "sc-formatter": "1.0.x",
+    "ws": "0.7.2"
   },
   "readmeFilename": "README.md"
 }
