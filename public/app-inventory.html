@@ -12,7 +12,7 @@
     <sc-socket socket="{{socket}}"></sc-socket>
     
     <template is="dom-if" if="{{isAuthenticated}}">
-      <app-router is-authenticated="{{isAuthenticated}}">
+      <app-router>
         <page-product-details path="/category/:categoryId/product/:productId"></page-product-details>
         <page-category-details path="/category/:categoryId"></page-category-details>
         <page-category-list path="*"></page-category-list>
