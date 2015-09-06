@@ -5,7 +5,8 @@ var path = require('path');
 var dummyData = require('./sc_modules/dummy-data');
 var accessControl = require('./sc_modules/access-control');
 var authentication = require('./sc_modules/authentication');
-var realtimeRest = require('./sc_modules/realtime-rest');
+//var realtimeRest = require('./sc_modules/realtime-rest');
+var scRethink = require('sc-rest-rethinkdb');
 
 module.exports.run = function (worker) {
   console.log('   >> Worker PID:', process.pid);
@@ -46,6 +47,6 @@ module.exports.run = function (worker) {
     };
     
     // Realtime rest layer to get, set and subscribe to data changes
-    realtimeRest.attach(scServer, socket, restOptions);
+    scRethink.attach(scServer, socket, restOptions);
   });
 };
