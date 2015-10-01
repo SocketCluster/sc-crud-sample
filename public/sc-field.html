@@ -1,40 +1,35 @@
 <link rel="import" href="/bower_components/polymer/polymer.html">
 <link rel="import" href="/sc-socket.html">
 
-<dom-module id="sc-model">
+<dom-module id="sc-field">
   <template>
     <sc-socket socket="{{socket}}"></sc-socket>
   </template>
 
   <script>
+    // TODO: Add realtime option
     Polymer({
-      is: 'sc-model',
-      
+      is: 'sc-field',
+
       properties: {
-        modelType: {
-          type: String,
-          value: 'field'
-        },
         resourceType: {
           type: String,
-          observer: 'loadValue'
+          observer: 'loadValueObserver'
         },
         resourceId: {
-          type: Number,
-          observer: 'loadValue'
+          type: String,
+          observer: 'loadValueObserver'
         },
         resourceField: {
           type: String,
-          observer: 'loadValue'
+          observer: 'loadValueObserver'
         },
         resourceValue: {
           type: Object,
           notify: true
         },
-        resourcePage: {
-          type: Number,
-          value: 0,
-          observer: 'loadValue'
+        optimization: {
+          type: Object
         },
         socket: {
           type: Object
@@ -43,80 +38,70 @@
           type: Object
         }
       },
-      
+
       attached: function () {
         this.loadValue();
       },
-      
+
+      loadValueObserver: function () {
+        if (this.resourceType != null && this.resourceId != null && this.resourceField != null) {
+          this.loadValue();
+        }
+      },
+
       loadValue: function () {
         var self = this;
-        
+
         if (this.socket) {
           this.cleanupChannel();
-          
+
           var query = {
             type: this.resourceType,
             id: this.resourceId,
             field: this.resourceField
           };
-          
-          var sourcePath = '';
-          if (this.modelType == 'collection') {
-            sourcePath += this.resourcePage + ':';
-            query.page = this.resourcePage;
-          }
-          
-          if (this.resourceField) {
-            sourcePath += this.resourceType + '/' + this.resourceId + '/' + this.resourceField;
-          } else if (this.resourceId) {
-            sourcePath += this.resourceType + '/' + this.resourceId;
-          } else {
-            sourcePath += this.resourceType;
-          }
-          
-          // Get the initial value for the model
+
+          var sourcePath = 'crud>' + this.resourceType + '/' + this.resourceId + '/' + this.resourceField;
+
+          // Get the initial value for the field model
           var loadData = function () {
-            self.socket.emit('get', query, function (err, data) {
+            self.socket.emit('read', query, function (err, result) {
               if (err) {
-                // TODO: Handle error
+                throw new Error(err);
               } else {
-                self.resourceValue = data;
+                self.resourceValue = result;
               }
             });
           };
-          
+
           // This is to account for socket reconnects - After recovering from a lost connection,
           // we will re-fetch the whole value to make sure that we haven't missed any updates made to it
           this.socket.on('connect', function (status) {
             loadData();
           });
-          
+
           if (this.socket.state == 'open') {
             loadData();
           }
-          
-          // Subscribe to further changes while this model is active
+
+          // Subscribe to further changes while this field model is active
           this.channel = this.socket.subscribe(sourcePath);
-          this.watcher = function (packet) {
-            if (packet.type == 'add') {
-              if (self.resourceValue && self.resourceValue.length) {
-                self.resourceValue = self.resourceValue.slice(0, packet.index)
-                  .concat([packet.value])
-                  .concat(self.resourceValue.slice(packet.index))
-                  .slice(0, packet.pageSize);
+
+          if (!this.watcher) {
+            this.watcher = function (packet) {
+              if (packet.type == 'delete') {
+                self.resourceValue = null;
               } else {
-                self.resourceValue = [packet.value];
+                self.resourceValue = packet.value;
               }
-            } else {
-              self.resourceValue = packet.value;
-            }
-          };
-          
+            };
+          }
+
           // Consume the realtime channel data as it arrives
           this.channel.watch(this.watcher);
         }
       },
-      
+
       cleanupChannel: function () {
         if (this.channel) {
           this.channel.unwatch(this.watcher);
@@ -125,33 +110,39 @@
           }
         }
       },
-      
+
       detached: function () {
         this.cleanupChannel();
       },
-      
-      save: function (newValue, callback) {
+
+      update: function (newValue, callback) {
         this.resourceValue = newValue;
-      
+
         var query = {
           type: this.resourceType,
           id: this.resourceId,
           field: this.resourceField,
           value: newValue
         };
-        // Update the model on the server
-        this.socket.emit('set', query, callback);
+        if (this.optimization) {
+          query.optimization = this.optimization;
+        }
+        this.socket.emit('update', query, callback);
       },
-      
-      // Only relevant for array/list models
-      add: function (callback) {
+
+      delete: function (callback) {
+        this.resourceValue = null;
+
         var query = {
           type: this.resourceType,
           id: this.resourceId,
-          field: this.resourceField
+          field: this.resourceField,
+          optimization: this.optimization
         };
-        // Add new entry to model on the server
-        this.socket.emit('add', query, callback);
+        if (this.optimization) {
+          query.optimization = this.optimization;
+        }
+        this.socket.emit('delete', query, callback);
       }
     });
   </script>

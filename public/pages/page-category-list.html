@@ -1,5 +1,6 @@
 <link rel="import" href="/bower_components/polymer/polymer.html">
-<link rel="import" href="/sc-model.html">
+<link rel="import" href="/sc-field.html">
+<link rel="import" href="/sc-collection.html">
 <link rel="import" href="/bower_components/neon-animation/neon-animatable-behavior.html">
 
 <dom-module id="page-category-list">
@@ -8,11 +9,11 @@
       display: inline-block;
       margin-bottom: 30px;
     }
-    
+
     .content-body {
       width: 500px;
     }
-    
+
     .content-container {
       width: 100%;
       display: flex;
@@ -21,24 +22,28 @@
       -webkit-flex-direction: column;
       padding: 20px;
     }
-    
+
     .content-row {
       display: flex;
       -webkit-display: flex;
       width: 100%;
     }
-    
+
     .content-col {
       box-sizing: border-box;
       display: inline-block;
       width: 100%;
     }
   </style>
-  
+
   <template>
     <!-- local DOM for your element -->
-    <sc-model id="category-name" resource-type="Category" resource-value="{{categories}}"></sc-model>
-    
+    <sc-collection id="category-name" resource-type="Category" resource-value="{{categories}}"></sc-collection>
+
+    <template is="dom-repeat" items="{{categories}}">
+      <sc-field resource-type="Category" resource-id="{{item.id}}" resource-field="name" resource-value="{{item.name}}"></sc-field>
+    </template>
+
     <div class="content-container">
       <h2 class="content-row heading">Inventory Categories</h2>
       <div class="content-body">
@@ -64,7 +69,7 @@
     // element registration
     Polymer({
       is: 'page-category-list',
-      
+
       behaviors: [
         Polymer.NeonAnimatableBehavior
       ],
@@ -76,11 +81,11 @@
           type: Array
         }
       },
-      
+
       computeCategoryDetailsUrl: function (category) {
         return '#!/category/' + category.id;
       },
-      
+
       saveValue: function (event) {
         var targetModelName = event.target.dataset.saveTo;
         var targetModel = this.$[targetModelName];

@@ -34,14 +34,14 @@
           type: Object
         }
       },
-      
+
       attached: function () {
         var self = this;
-        
+
         this.socket.on('connect', function (status) {
           self.isAuthenticated = status.isAuthenticated;
         });
-        
+
         window.addEventListener('storage', function (e) {
           // In case the user logged in from a different tab
           if (e.key == self.socket.options.authTokenName) {
@@ -56,11 +56,11 @@
             }
           }
         });
-        
+
         this.socket.on('removeAuthToken', function () {
           self.isAuthenticated = false;
         });
-        
+
         this.socket.on('logout', function () {
           self.isAuthenticated = false;
         });

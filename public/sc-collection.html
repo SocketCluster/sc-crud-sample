@@ -1,0 +1,262 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<link rel="import" href="/sc-socket.html">
+
+<dom-module id="sc-collection">
+  <template>
+    <sc-socket socket="{{socket}}"></sc-socket>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'sc-collection',
+
+      properties: {
+        resourceType: {
+          type: String,
+          observer: 'loadValueObserver'
+        },
+        resourceView: {
+          type: String,
+          observer: 'loadValueObserver'
+        },
+        resourceValue: {
+          type: Array,
+          value: [],
+          notify: true
+        },
+        resourcePageOffset: {
+          type: Number,
+          value: 0,
+          notify: true,
+          observer: 'loadValueObserver'
+        },
+        resourcePageSize: {
+          type: Number,
+          value: 10,
+          notify: true,
+          observer: 'loadValueObserver'
+        },
+        resourceIsLastPage: {
+          type: Boolean,
+          notify: true
+        },
+        resourcePredicateData: {
+          type: Object,
+          observer: 'loadValueObserver'
+        },
+        resourceCount: {
+          type: Number,
+          notify: true
+        },
+        getCount: {
+          type: Boolean,
+          value: true,
+          observer: 'loadValueObserver'
+        },
+        realtime: {
+          type: Boolean,
+          value: true,
+          observer: 'realtimeModeObserver'
+        },
+        socket: {
+          type: Object
+        },
+        viewChannel: {
+          type: Object
+        },
+        typeChannel: {
+          type: Object
+        }
+      },
+
+      attached: function () {
+        this.loadValue();
+      },
+
+      loadValueObserver: function () {
+        if (this.resourceType != null && this.resourceView != null) {
+          this.loadValue();
+        }
+      },
+
+      loadValue: function () {
+        var self = this;
+
+        if (!this.viewChangeWatcher) {
+          this.viewChangeWatcher = function (packet) {
+            var collectionStart = self.resourcePageOffset || 0;
+            var collectionEnd = collectionStart + self.resourcePageSize;
+            if (packet.offset <= collectionEnd) {
+              self.reloadCurrentPage();
+            }
+          };
+        }
+        if (!this.typeChangeWatcher) {
+          this.typeChangeWatcher = function (packet) {
+            self.reloadCurrentPage();
+          };
+        }
+
+        if (this.socket) {
+          if (this.realtime) {
+            this.setupChannels();
+          }
+
+          var query = {
+            type: this.resourceType
+          };
+
+          query.offset = this.resourcePageOffset || 0;
+
+          if (this.resourceView != null) {
+            query.view = this.resourceView;
+          }
+
+          if (this.resourcePredicateData != null) {
+            query.predicateData = this.resourcePredicateData;
+          }
+          if (this.resourcePageSize) {
+            query.pageSize = this.resourcePageSize;
+          }
+          if (this.getCount) {
+            query.getCount = true;
+          }
+
+          // Load values for the collection
+          var loadData = function () {
+            self.socket.emit('read', query, function (err, result) {
+              if (err) {
+                throw new Error(err);
+              } else {
+                var existingItemsMap = {};
+                var currentItems = self.resourceValue;
+                var len = currentItems.length;
+
+                for (var h = 0; h < len; h++) {
+                  existingItemsMap[currentItems[h].id] = currentItems[h];
+                }
+
+                var newItems = [];
+                var tempId;
+
+                var resultDataLen = result.data.length;
+
+                for (var i = 0; i < resultDataLen; i++) {
+                  tempId = result.data[i];
+                  if (existingItemsMap[tempId] == null) {
+                    newItems.push({id: tempId});
+                  } else {
+                    newItems.push(existingItemsMap[tempId]);
+                  }
+                }
+                self.resourceValue = newItems;
+
+                if (result.count != null) {
+                  self.resourceCount = result.count;
+                }
+              }
+              self.resourceIsLastPage = result.isLastPage;
+            });
+          };
+
+          // This is to account for socket reconnects - After recovering from a lost connection,
+          // we will re-fetch the whole value to make sure that we haven't missed any updates made to it
+          this.socket.on('connect', function (status) {
+            loadData();
+          });
+
+          if (this.socket.state == 'open') {
+            loadData();
+          }
+        }
+      },
+
+      realtimeModeObserver: function (newValue) {
+        if (this.socket) {
+          if (newValue) {
+            this.loadValue();
+          } else {
+            this.cleanupChannels();
+          }
+        }
+      },
+
+      setupChannels: function () {
+        var channelPrefix = 'crud>';
+        var viewChannelName = channelPrefix + this.resourceView +
+          '(' + JSON.stringify(this.resourcePredicateData) + '):' + this.resourceType;
+
+        if (!this.socket.watchers(viewChannelName).length) {
+          this.viewChannel = this.socket.subscribe(viewChannelName);
+          this.viewChannel.watch(this.viewChangeWatcher);
+        }
+
+        var typeChannelName = channelPrefix + this.resourceType;
+        if (!this.socket.watchers(typeChannelName).length) {
+          this.typeChannel = this.socket.subscribe(typeChannelName);
+          this.typeChannel.watch(this.typeChangeWatcher);
+        }
+      },
+
+      cleanupChannels: function () {
+        if (this.viewChannel) {
+          this.viewChannel.unwatch(this.viewChangeWatcher);
+
+          if (!this.viewChannel.watchers().length) {
+            this.viewChannel.unsubscribe();
+          }
+        }
+        if (this.typeChannel) {
+          this.typeChannel.unwatch(this.typeChangeWatcher);
+
+          if (!this.typeChannel.watchers().length) {
+            this.typeChannel.unsubscribe();
+          }
+        }
+      },
+
+      detached: function () {
+        this.cleanupChannels();
+      },
+
+      reloadCurrentPage: function () {
+        this.loadValue();
+      },
+
+      fetchNextPage: function () {
+        if (!this.resourceIsLastPage) {
+          this.resourcePageOffset += this.resourcePageSize;
+        }
+      },
+
+      fetchPreviousPage: function () {
+        if (this.resourcePageOffset > 0) {
+          var prevOffset = this.resourcePageOffset - this.resourcePageSize;
+          if (prevOffset < 0) {
+            prevOffset = 0;
+          }
+          this.resourcePageOffset = prevOffset;
+        }
+      },
+
+      create: function (newValue, callback) {
+        var query = {
+          type: this.resourceType,
+          predicateData: this.resourcePredicateData,
+          value: newValue
+        };
+        this.socket.emit('create', query, callback);
+      },
+
+      delete: function (callback) {
+        this.resourceValue = null;
+
+        var query = {
+          type: this.resourceType,
+          predicateData: this.resourcePredicateData
+        };
+        this.socket.emit('delete', query, callback);
+      }
+    });
+  </script>
+</dom-module>

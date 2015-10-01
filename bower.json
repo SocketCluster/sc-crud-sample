@@ -22,11 +22,11 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#~1.0.3",
+    "polymer": "Polymer/polymer#~1.1.5",
     "neon-animation": "PolymerElements/neon-animation#~1.0.3",
     "page": "visionmedia/page.js#~1.6.3"
   },
   "resolutions": {
-    "webcomponentsjs": "^0.7.2"
+    "webcomponentsjs": "^0.7.15"
   }
 }
