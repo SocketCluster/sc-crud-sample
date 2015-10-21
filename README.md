@@ -31,6 +31,7 @@ make updates to the data in realtime.
 
 To run this sample:
 
+- Make sure you have Git installed (https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 - Make sure you have Node.js installed (http://nodejs.org/)
 - Make sure you have RethinkDB installed (https://www.rethinkdb.com/)
 - ```git clone https://github.com/SocketCluster/sc-sample-inventory.git```
