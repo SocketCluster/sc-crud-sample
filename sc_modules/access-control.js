@@ -1,6 +1,6 @@
 module.exports.attach = function (scServer) {
   // Setup SocketCluster middleware for access control
-  
+
   scServer.addMiddleware(scServer.MIDDLEWARE_EMIT, function (socket, event, data, next) {
     if (event == 'get' || event == 'set') {
       // If socket has a valid auth token, then allow emitting get or set events
@@ -15,7 +15,7 @@ module.exports.attach = function (scServer) {
       next();
     }
   });
-  
+
   scServer.addMiddleware(scServer.MIDDLEWARE_PUBLISH_IN, function (socket, channel, data, next) {
     // If socket has a valid auth token, then allow publishing to any channel
     if (socket.getAuthToken()) {
@@ -25,7 +25,7 @@ module.exports.attach = function (scServer) {
       socket.emit('logout');
     }
   });
-  
+
   scServer.addMiddleware(scServer.MIDDLEWARE_SUBSCRIBE, function (socket, channel, next) {
     // If socket has a valid auth token, then allow subscribing to any channel
     if (socket.getAuthToken()) {
