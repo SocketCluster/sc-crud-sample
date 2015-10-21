@@ -34,7 +34,14 @@ module.exports.run = function (worker) {
         fields: {
           id: type.string(),
           name: type.string(),
-          desc: type.string()
+          desc: type.string().optional()
+        },
+        views: {
+          alphabeticalView: {
+            order: function (r) {
+              return r.asc('name');
+            }
+          }
         }
       },
       Product: {
@@ -48,7 +55,6 @@ module.exports.run = function (worker) {
         },
         views: {
           categoryView: {
-            pageSize: 5,
             filter: function (r, categoryId) {
               return r.row('category').eq(categoryId);
             },

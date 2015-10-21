@@ -34,11 +34,17 @@
       display: inline-block;
       width: 100%;
     }
+
+    .content-col-half {
+      box-sizing: border-box;
+      display: inline-block;
+      width: 50%;
+    }
   </style>
 
   <template>
     <!-- local DOM for your element -->
-    <sc-collection id="category-name" resource-type="Category" resource-value="{{categories}}"></sc-collection>
+    <sc-collection id="categories" resource-type="Category" resource-value="{{categories}}" resource-view="alphabeticalView"></sc-collection>
 
     <template is="dom-repeat" items="{{categories}}">
       <sc-field resource-type="Category" resource-id="{{item.id}}" resource-field="name" resource-value="{{item.name}}"></sc-field>
@@ -61,6 +67,20 @@
             </table>
           </div>
         </div>
+        <div class="content-row">
+          <div class="content-col-half">
+            <input type="text" value="{{newCategoryName::input}}" on-keydown="keyPressed">
+          </div>
+          <div class="content-col-half">
+            <input type="button" class="btn" value="Add product" on-click="addCategory">
+            <input type="checkbox" class="checkbox" style="margin-left: 10px; margin-top: 0;" checked="{{realtime::change}}"> <span>Realtime collection</span>
+          </div>
+        </div>
+        <div class="content-row">
+          <div class="content-col">
+            <a href="javascript:void(0);" on-click="goToPrevPage">Prev page</a> | <a href="javascript:void(0);" on-click="goToNextPage">Next page</a>
+          </div>
+        </div>
       </div>
     </div>
   </template>
@@ -79,6 +99,13 @@
         // declare properties for the element's public API
         categories: {
           type: Array
+        },
+        newCategoryName: {
+          type: String
+        },
+        realtime: {
+          type: Boolean,
+          value: true
         }
       },
 
@@ -86,10 +113,44 @@
         return '#!/category/' + category.id;
       },
 
+      goToPrevPage: function () {
+        var categoryListModel = this.$['categories'];
+        categoryListModel.fetchPreviousPage();
+      },
+
+      goToNextPage: function () {
+        var categoryListModel = this.$['categories'];
+        categoryListModel.fetchNextPage();
+      },
+
       saveValue: function (event) {
         var targetModelName = event.target.dataset.saveTo;
         var targetModel = this.$[targetModelName];
         targetModel.fire('save', event.target.value);
+      },
+
+      keyPressed: function (e) {
+        if (e.keyCode == 13) {
+          this.addCategory();
+        }
+      },
+
+      addCategory: function () {
+        var self = this;
+
+        var categoryListModel = this.$['categories'];
+
+        var newCategory = {
+          name: this.newCategoryName
+        };
+
+        categoryListModel.create(newCategory, function (err, newId) {
+          if (err) {
+            // TODO: Handle error
+          } else {
+            self.newCategoryName = '';
+          }
+        });
       }
     });
   </script>
