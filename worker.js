@@ -79,6 +79,7 @@ module.exports.run = function (worker) {
   };
 
   var crud = scCrudRethink.attach(worker, crudOptions);
+  scServer.thinky = crud.thinky;
 
   // Add some dummy data to our store
   dummyData.attach(scServer, crud);
