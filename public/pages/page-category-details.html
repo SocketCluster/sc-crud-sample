@@ -50,7 +50,6 @@
 
     <!-- Generate some models dynamically -->
     <template is="dom-repeat" items="{{categoryProducts}}" filter="hasIdFilter" observe="id">
-      <!-- TODO: Is resource-predicate-data needed here? Since this is read-only-->
       <sc-field resource-type="Product" resource-id="{{item.id}}" resource-field="qty" resource-value="{{item.qty}}"></sc-field>
       <sc-field resource-type="Product" resource-id="{{item.id}}" resource-field="price" resource-value="{{item.price}}"></sc-field>
       <sc-field resource-type="Product" resource-id="{{item.id}}" resource-field="name" resource-value="{{item.name}}"></sc-field>
