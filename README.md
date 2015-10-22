@@ -3,7 +3,7 @@
 Scroll to the bottom for installation instructions.
 
 A sample inventory tracking realtime single page app built with SocketCluster (http://socketcluster.io/), Google's Polymer (v1.0) Framework and RethinkDB.
-It demonstrates a way of building realtime apps which I decided to call "Granular REAl-Time CRUD" (GREAT CRUD)... Unless you can think of a better name.
+It demonstrates a way of building realtime apps.
 
 All code for the server-side worker logic is linked from worker.js - It's mostly generic so feel free to reuse/modify for your own app
 or you can use this app as a base to build yours if starting from scratch.

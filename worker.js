@@ -5,7 +5,6 @@ var path = require('path');
 var dummyData = require('./sc_modules/dummy-data');
 var accessControl = require('./sc_modules/access-control');
 var authentication = require('./sc_modules/authentication');
-var realtimeRest = require('./sc_modules/realtime-rest');
 var scCrudRethink = require('sc-crud-rethink');
 
 module.exports.run = function (worker) {
