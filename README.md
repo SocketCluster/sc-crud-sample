@@ -1,4 +1,7 @@
 # sc-sample-inventory
+
+Scroll to the bottom for installation instructions.
+
 A sample inventory tracking realtime single page app built with SocketCluster (http://socketcluster.io/), Google's Polymer (v1.0) Framework and RethinkDB.
 It demonstrates a way of building realtime apps which I decided to call "Granular REAl-Time CRUD" (GREAT CRUD)... Unless you can think of a better name.
 
