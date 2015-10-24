@@ -42,6 +42,6 @@ To run this sample:
 - Run ```npm install``` (no arguments)
 - Make sure you have bower installed, if not: ```npm install -g bower```
 - Run ```bower install``` (no arguments)
-- Run ```sudo rethinkdb```
+- Run ```sudo rethinkdb``` (in a different terminal or in the background - Make sure RethinkDB stays running)
 - Run ```node server```
 - In your browser, go to ```http://localhost:8000/```
