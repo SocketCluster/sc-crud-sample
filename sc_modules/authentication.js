@@ -1,14 +1,14 @@
 module.exports.attach = function (scServer, socket) {
-  var tokenExpiresInMinutes = 10;
+  var tokenExpiresInSeconds = 10 * 60;
 
-  var tokenRenewalIntervalInMilliseconds = Math.round(1000 * 60 * tokenExpiresInMinutes / 3);
+  var tokenRenewalIntervalInMilliseconds = Math.round(1000 * tokenExpiresInSeconds / 3);
 
   // Keep renewing the token (if there is one) at a predefined interval to make sure that
   // it doesn't expire while the connection is active.
   var renewAuthTokenInterval = setInterval(function () {
     var currentToken = socket.getAuthToken();
     if (currentToken) {
-      socket.setAuthToken(currentToken, {expiresInMinutes: tokenExpiresInMinutes});
+      socket.setAuthToken(currentToken, {expiresIn: tokenExpiresInSeconds});
     }
   }, tokenRenewalIntervalInMilliseconds);
 
@@ -22,7 +22,7 @@ module.exports.attach = function (scServer, socket) {
         var token = {
           username: loginDetails.username
         };
-        socket.setAuthToken(token, {expiresInMinutes: tokenExpiresInMinutes});
+        socket.setAuthToken(token, {expiresIn: tokenExpiresInSeconds});
         respond();
       } else {
         // This is not really an error.
