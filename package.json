@@ -1,7 +1,7 @@
 {
   "name": "socketcluster-sample",
   "description": "A sample SocketCluster app",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "contributors": [
     {
       "name": "Jonathan Gros-Dubois",
