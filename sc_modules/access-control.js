@@ -2,8 +2,8 @@ module.exports.attach = function (scServer) {
   // Setup SocketCluster middleware for access control
 
   scServer.addMiddleware(scServer.MIDDLEWARE_EMIT, function (req, next) {
-    if (req.event == 'get' || req.event == 'set') {
-      // If socket has a valid auth token, then allow emitting get or set events
+    if (req.event == 'create' || req.event == 'read' || req.event == 'update' || req.event == 'delete') {
+      // If socket has a valid auth token, then allow emitting CRUD events
       if (req.socket.getAuthToken()) {
         next();
       } else {
