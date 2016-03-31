@@ -37,8 +37,8 @@ module.exports.run = function (worker) {
         },
         views: {
           alphabeticalView: {
-            order: function (r) {
-              return r.asc('name');
+            transform: function (fullTableQuery, r) {
+              return fullTableQuery.orderBy(r.asc('name'));
             }
           }
         }
@@ -54,11 +54,8 @@ module.exports.run = function (worker) {
         },
         views: {
           categoryView: {
-            filter: function (r, categoryId) {
-              return r.row('category').eq(categoryId);
-            },
-            order: function (r) {
-              return r.asc('qty');
+            transform: function (fullTableQuery, r, categoryId) {
+              return fullTableQuery.filter(r.row('category').eq(categoryId)).orderBy(r.asc('qty'))
             }
           }
         }
