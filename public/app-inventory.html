@@ -10,7 +10,7 @@
 <dom-module id="app-inventory">
   <template>
     <sc-socket socket="{{socket}}"></sc-socket>
-    
+
     <template is="dom-if" if="{{isAuthenticated}}">
       <app-router>
         <page-product-details path="/category/:categoryId/product/:productId"></page-product-details>

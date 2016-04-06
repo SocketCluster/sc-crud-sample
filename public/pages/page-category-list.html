@@ -44,7 +44,7 @@
 
   <template>
     <!-- local DOM for your element -->
-    <sc-collection id="categories" resource-type="Category" resource-value="{{categories}}" resource-view="alphabeticalView"></sc-collection>
+    <sc-collection id="categories" resource-type="Category" resource-value="{{categories}}" resource-view="alphabeticalView" optimize></sc-collection>
 
     <template is="dom-repeat" items="{{categories}}">
       <sc-field resource-type="Category" resource-id="{{item.id}}" resource-field="name" resource-value="{{item.name}}"></sc-field>

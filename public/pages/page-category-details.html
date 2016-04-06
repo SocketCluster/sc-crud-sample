@@ -46,7 +46,7 @@
     <!-- Model components (data sources) for this page -->
     <sc-field id="category-name" resource-type="Category" resource-id="{{categoryId}}" resource-field="name" resource-value="{{categoryName}}"></sc-field>
     <sc-field id="category-desc" resource-type="Category" resource-id="{{categoryId}}" resource-field="desc" resource-value="{{categoryDesc}}"></sc-field>
-    <sc-collection id="category-products" realtime="{{realtime}}" resource-type="Product" resource-value="{{categoryProducts}}" resource-view="categoryView" resource-predicate-data="{{categoryId}}" resource-page-offset="{{pageOffsetStart}}" resource-page-size="{{pageSize}}" resource-count="{{itemCount}}"></sc-collection>
+    <sc-collection id="category-products" optimize disable-realtime="{{!realtime}}" resource-type="Product" resource-value="{{categoryProducts}}" resource-view="categoryView" resource-predicate-data="{{categoryId}}" resource-page-offset="{{pageOffsetStart}}" resource-page-size="{{pageSize}}" resource-count="{{itemCount}}"></sc-collection>
 
     <!-- Generate some models dynamically -->
     <template is="dom-repeat" items="{{categoryProducts}}" filter="hasIdFilter" observe="id">

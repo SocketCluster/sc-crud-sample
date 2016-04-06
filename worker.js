@@ -3,7 +3,6 @@ var express = require('express');
 var serveStatic = require('serve-static');
 var path = require('path');
 var dummyData = require('./sc_modules/dummy-data');
-var accessControl = require('./sc_modules/access-control');
 var authentication = require('./sc_modules/authentication');
 var scCrudRethink = require('sc-crud-rethink');
 
@@ -41,7 +40,8 @@ module.exports.run = function (worker) {
               return fullTableQuery.orderBy(r.asc('name'));
             }
           }
-        }
+        },
+        accessControl: mustBeLoggedIn
       },
       Product: {
         fields: {
@@ -58,13 +58,15 @@ module.exports.run = function (worker) {
               return fullTableQuery.filter(r.row('category').eq(categoryId)).orderBy(r.asc('qty'))
             }
           }
-        }
+        },
+        accessControl: mustBeLoggedIn
       },
       User: {
         fields: {
           username: type.string(),
           password: type.string()
-        }
+        },
+        accessControl: mustBeLoggedIn
       }
     },
 
@@ -74,14 +76,20 @@ module.exports.run = function (worker) {
     }
   };
 
+  function mustBeLoggedIn(req, next) {
+    if (req.socket.getAuthToken()) {
+      next();
+    } else {
+      next(true);
+      req.socket.emit('logout');
+    }
+  }
+
   var crud = scCrudRethink.attach(worker, crudOptions);
   scServer.thinky = crud.thinky;
 
   // Add some dummy data to our store
   dummyData.attach(scServer, crud);
-
-  // Access control middleware
-  accessControl.attach(scServer);
 
   /*
     In here we handle our incoming realtime connections and listen for events.
