@@ -51,7 +51,7 @@
             Qty:
           </div>
           <div class="content-col">
-            <input type="text" value="{{productQty}}" on-change="saveValue" data-save-to="product-qty">
+            <input type="text" value="{{productQty::input}}" on-change="saveValue" data-save-to="product-qty">
           </div>
         </div>
         <div class="content-row">
@@ -59,7 +59,7 @@
             Price:
           </div>
           <div class="content-col">
-            <input type="text" value="{{productPrice}}" on-change="saveValue" data-save-to="product-price">
+            <input type="text" value="{{productPrice::input}}" on-change="saveValue" data-save-to="product-price">
           </div>
         </div>
         <div class="content-row">
@@ -67,7 +67,7 @@
             Description:
           </div>
           <div class="content-col">
-            <input type="text" value="{{productDesc}}" on-change="saveValue" data-save-to="product-desc">
+            <input type="text" value="{{productDesc::input}}" on-change="saveValue" data-save-to="product-desc">
           </div>
         </div>
         <div class="content-row">
@@ -126,7 +126,7 @@
       saveValue: function (event) {
         var targetModelName = event.target.dataset.saveTo;
         var targetModel = this.$[targetModelName];
-        targetModel.update(event.target.value);
+        targetModel.save();
       }
     });
   </script>
