@@ -46,13 +46,13 @@
     <!-- Model components (data sources) for this page -->
     <sc-field id="category-name" resource-type="Category" resource-id="{{categoryId}}" resource-field="name" resource-value="{{categoryName}}"></sc-field>
     <sc-field id="category-desc" resource-type="Category" resource-id="{{categoryId}}" resource-field="desc" resource-value="{{categoryDesc}}"></sc-field>
-    <sc-collection id="category-products" optimize disable-realtime="{{!realtime}}" resource-type="Product" resource-value="{{categoryProducts}}" resource-view="categoryView" resource-predicate-data="{{categoryId}}" resource-page-offset="{{pageOffsetStart}}" resource-page-size="{{pageSize}}" resource-count="{{itemCount}}"></sc-collection>
+    <sc-collection id="category-products" disable-realtime="{{!realtime}}" resource-type="Product" resource-value="{{categoryProducts}}" resource-view="categoryView" resource-view-params="{{categoryViewParams}}" resource-page-offset="{{pageOffsetStart}}" resource-page-size="{{pageSize}}" resource-count="{{itemCount}}"></sc-collection>
 
     <!-- Generate some models dynamically -->
     <template is="dom-repeat" items="{{categoryProducts}}" filter="hasIdFilter" observe="id">
-      <sc-field resource-type="Product" resource-id="{{item.id}}" resource-field="qty" resource-value="{{item.qty}}"></sc-field>
-      <sc-field resource-type="Product" resource-id="{{item.id}}" resource-field="price" resource-value="{{item.price}}"></sc-field>
-      <sc-field resource-type="Product" resource-id="{{item.id}}" resource-field="name" resource-value="{{item.name}}"></sc-field>
+      <sc-field id$="{{item.id}}-qty" resource-type="Product" resource-id="{{item.id}}" resource-field="qty" resource-value="{{item.qty}}"></sc-field>
+      <sc-field id$="{{item.id}}-price" resource-type="Product" resource-id="{{item.id}}" resource-field="price" resource-value="{{item.price}}"></sc-field>
+      <sc-field id$="{{item.id}}-name" resource-type="Product" resource-id="{{item.id}}" resource-field="name" resource-value="{{item.name}}"></sc-field>
     </template>
 
     <div class="content-container">
@@ -118,6 +118,10 @@
         categoryId: {
           type: String
         },
+        categoryViewParams: {
+          type: Object,
+          computed: 'computeCategoryViewParams(categoryId)'
+        },
         categoryName: {
           type: String
         },
@@ -151,6 +155,10 @@
           type: String,
           value: ''
         }
+      },
+
+      computeCategoryViewParams: function (categoryId) {
+        return {category: categoryId};
       },
 
       calculateFirstOffset: function (pageOffsetStart, categoryProducts) {

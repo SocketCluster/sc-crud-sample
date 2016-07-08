@@ -56,8 +56,13 @@ module.exports.run = function (worker) {
         },
         views: {
           categoryView: {
-            transform: function (fullTableQuery, r, categoryId) {
-              return fullTableQuery.filter(r.row('category').eq(categoryId)).orderBy(r.asc('qty'))
+            // Declare the fields from the Product model which are required by the transform function.
+            paramFields: ['category'],
+            transform: function (fullTableQuery, r, productFields) {
+              // Because we declared the category field above, it is evailable in here.
+              // This allows us to tranform/filter the Product collection based on a specific category
+              // ID provided by the frontend.
+              return fullTableQuery.filter(r.row('category').eq(productFields.category)).orderBy(r.asc('qty'))
             }
           }
         },
@@ -78,8 +83,8 @@ module.exports.run = function (worker) {
     },
 
     thinkyOptions: {
-      host: '127.0.0.1',
-      port: 28015
+      host: process.env.DATABASE_HOST || '127.0.0.1',
+      port: process.env.DATABASE_PORT || 28015
     }
   };
 
@@ -95,15 +100,15 @@ module.exports.run = function (worker) {
   function postFilter(req, next) {
     // The post access control filters have access to the
     // resource object from the DB.
-    // In case of read actions, you can even modify the 
+    // In case of read actions, you can even modify the
     // resource's properties before it gets sent back to the user.
-    console.log('r', !!req.r.table);
-    console.log('action', req.action);
-    console.log('socket', req.socket.id);
-    console.log('authToken', req.authToken);
-    console.log('query', req.query);
-    console.log('resource', req.resource);
-    console.log('-------');
+    // console.log('r', !!req.r.table);
+    // console.log('action', req.action);
+    // console.log('socket', req.socket.id);
+    // console.log('authToken', req.authToken);
+    // console.log('query', req.query);
+    // console.log('resource', req.resource);
+    // console.log('-------');
     // if (req.resource.name == 'Foo') {
     //   var err = new Error('MAJOR FAIL');
     //   err.name = 'MajorFailError';

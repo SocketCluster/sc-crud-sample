@@ -44,7 +44,7 @@
 
   <template>
     <!-- local DOM for your element -->
-    <sc-collection id="categories" resource-type="Category" resource-value="{{categories}}" resource-view="alphabeticalView" resource-predicate-data="null" optimize disable-realtime="{{disableRealtime}}"></sc-collection>
+    <sc-collection id="categories" resource-type="Category" resource-value="{{categories}}" resource-view="alphabeticalView" resource-view-params="null" disable-realtime="{{disableRealtime}}"></sc-collection>
 
     <template is="dom-repeat" items="{{categories}}">
       <sc-field resource-type="Category" resource-id="{{item.id}}" resource-field="name" resource-value="{{item.name}}"></sc-field>

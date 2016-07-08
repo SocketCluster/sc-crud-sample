@@ -6,6 +6,10 @@ module.exports.attach = function (scServer, scCrudRethink) {
   scCrudRethink.read({
     type: 'User'
   }, function (err, result) {
+    if (err) {
+      console.error(err);
+      return;
+    }
     // If there is no User data, assume that we are starting with
     // an empty database.
     if (!result.data.length) {

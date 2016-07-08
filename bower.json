@@ -24,11 +24,13 @@
   "dependencies": {
     "neon-animation": "PolymerElements/neon-animation#1.0.3",
     "page": "visionmedia/page.js#1.6.3",
-    "polymer": "Polymer/polymer#1.4.0",
-    "sc-collection": "2.x.x",
-    "sc-field": "2.x.x"
+    "polymer": "Polymer/polymer#1.6.0",
+    "sc-collection": "3.x.x",
+    "sc-field": "3.x.x"
   },
   "resolutions": {
-    "webcomponentsjs": "^0.7.15"
+    "webcomponentsjs": "0.7.15",
+    "polymer": "1.6.0",
+    "socketcluster-client": "4.3.19"
   }
 }

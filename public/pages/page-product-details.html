@@ -37,10 +37,10 @@
 
   <template>
     <!-- local DOM for your element -->
-    <sc-field id="product-name" resource-type="Product" resource-id="{{productId}}" resource-field="name" resource-value="{{productName}}" optimization="{{optimization}}"></sc-field>
-    <sc-field id="product-qty" resource-type="Product" resource-id="{{productId}}" resource-field="qty" resource-value="{{productQty}}" optimization="{{optimization}}"></sc-field>
-    <sc-field id="product-price" resource-type="Product" resource-id="{{productId}}" resource-field="price" resource-value="{{productPrice}}" optimization="{{optimization}}"></sc-field>
-    <sc-field id="product-desc" resource-type="Product" resource-id="{{productId}}" resource-field="desc" resource-value="{{productDesc}}" optimization="{{optimization}}"></sc-field>
+    <sc-field id="product-name" resource-type="Product" resource-id="{{productId}}" resource-field="name" resource-value="{{productName}}"></sc-field>
+    <sc-field id="product-qty" resource-type="Product" resource-id="{{productId}}" resource-field="qty" resource-value="{{productQty}}"></sc-field>
+    <sc-field id="product-price" resource-type="Product" resource-id="{{productId}}" resource-field="price" resource-value="{{productPrice}}"></sc-field>
+    <sc-field id="product-desc" resource-type="Product" resource-id="{{productId}}" resource-field="desc" resource-value="{{productDesc}}"></sc-field>
 
     <div class="content-container">
       <a href="{{computeCategoryDetailsUrl(categoryId)}}"><< Back to parent category</a>
@@ -94,10 +94,6 @@
         categoryId: {
           type: String
         },
-        optimization: {
-          type: Object,
-          computed: 'getOptimization(categoryId)'
-        },
         productId: {
           type: String
         },
@@ -113,10 +109,6 @@
         productDesc: {
           type: String
         }
-      },
-
-      getOptimization: function (categoryId) {
-        return {'categoryView': categoryId};
       },
 
       computeCategoryDetailsUrl: function (categoryId) {
