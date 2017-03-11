@@ -1,6 +1,5 @@
 module.exports.attach = function (scServer, socket) {
   var tokenExpiresInSeconds = 10 * 60;
-
   var tokenRenewalIntervalInMilliseconds = Math.round(1000 * tokenExpiresInSeconds / 3);
 
   // Keep renewing the token (if there is one) at a predefined interval to make sure that
@@ -8,7 +7,8 @@ module.exports.attach = function (scServer, socket) {
   var renewAuthTokenInterval = setInterval(function () {
     var currentToken = socket.getAuthToken();
     if (currentToken) {
-      socket.setAuthToken(currentToken, {expiresIn: tokenExpiresInSeconds});
+      currentToken.exp = Math.round(Date.now() / 1000) + tokenExpiresInSeconds;
+      socket.setAuthToken(currentToken);
     }
   }, tokenRenewalIntervalInMilliseconds);
 
