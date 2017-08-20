@@ -25,7 +25,7 @@
     "neon-animation": "PolymerElements/neon-animation#~2.0.1",
     "page": "visionmedia/page.js#1.6.3",
     "polymer": "Polymer/polymer#2.0.2",
-    "sc-collection": "^4.3.0",
+    "sc-collection": "^4.3.1",
     "sc-field": "^4.3.0"
   },
   "resolutions": {
