@@ -22,15 +22,15 @@
     "tests"
   ],
   "dependencies": {
-    "neon-animation": "PolymerElements/neon-animation#1.0.3",
+    "neon-animation": "PolymerElements/neon-animation#~2.0.1",
     "page": "visionmedia/page.js#1.6.3",
-    "polymer": "Polymer/polymer#1.6.0",
-    "sc-collection": "3.x.x",
-    "sc-field": "3.x.x"
+    "polymer": "Polymer/polymer#2.0.2",
+    "sc-collection": "^4.3.0",
+    "sc-field": "^4.3.0"
   },
   "resolutions": {
-    "webcomponentsjs": "0.7.15",
-    "polymer": "1.6.0",
-    "socketcluster-client": "5.3.0"
+    "webcomponentsjs": "^v1.0.2",
+    "socketcluster-client": "7.0.1",
+    "polymer": "2.0.2"
   }
 }

@@ -4,11 +4,14 @@
 <link rel="import" href="/pages/page-category-details.html">
 <link rel="import" href="/pages/page-category-list.html">
 <link rel="import" href="/pages/page-login.html">
+<link rel="import" href="/styles/bootstrap-styles.html">
 
 <script type="text/javascript" src="/bower_components/page/page.js"></script>
 
 <dom-module id="app-inventory">
   <template>
+    <style include="bootstrap-styles"></style>
+
     <sc-socket socket="{{socket}}"></sc-socket>
 
     <template is="dom-if" if="{{isAuthenticated}}">

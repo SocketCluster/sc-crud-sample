@@ -1,14 +1,16 @@
 <link rel="import" href="/bower_components/polymer/polymer.html">
 <link rel="import" href="/bower_components/neon-animation/neon-animated-pages.html">
 <link rel="import" href="/bower_components/neon-animation/neon-animatable.html">
-<link rel="import" href="/bower_components/neon-animation/neon-animations.html">
+<link rel="import" href="/bower_components/neon-animation/web-animations.html">
+<link rel="import" href="/bower_components/neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="/bower_components/neon-animation/animations/fade-out-animation.html">
 
 <script type="text/javascript" src="/bower_components/page/page.js"></script>
 
 <dom-module id="app-router">
   <template>
     <neon-animated-pages id="pages" class="flex" selected="[[currentPageIndex]]" entry-animation="fade-in-animation" exit-animation="fade-out-animation">
-      <content id="content"></content>
+      <slot id="content"></slot>
     </neon-animated-pages>
   </template>
 
@@ -20,20 +22,20 @@
           type: Number
         }
       },
-      
+
       attached: function () {
         var self = this;
-        
+
         var children = Polymer.dom(this.$.content).getDistributedNodes();
         var pages = children.filter(function (elm) {
           return elm.getAttribute && elm.getAttribute('path');
         });
         pages.forEach(function (elm, index) {
           var path = elm.getAttribute('path');
-          
+
           page(path, function (context) {
             var params = context.params;
-            
+
             for (var key in params) {
               if (params.hasOwnProperty(key) && key != Number(key)) {
                 var attributeName = self.camelToDash(key);
@@ -43,13 +45,13 @@
             self.currentPageIndex = index;
           });
         });
-        
+
         page({
           hashbang: true
         });
         page.base('/');
       },
-      
+
       camelToDash: function (str) {
         return str.replace(/(.)([A-Z])/g, '$1-$2').toLowerCase();
       }

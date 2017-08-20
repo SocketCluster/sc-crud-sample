@@ -36,6 +36,7 @@ module.exports.run = function (worker) {
         },
         views: {
           alphabeticalView: {
+            affectingFields: ['name'],
             transform: function (fullTableQuery, r) {
               return fullTableQuery.orderBy(r.asc('name'));
             }
@@ -58,6 +59,7 @@ module.exports.run = function (worker) {
           categoryView: {
             // Declare the fields from the Product model which are required by the transform function.
             paramFields: ['category'],
+            affectingFields: ['qty'],
             transform: function (fullTableQuery, r, productFields) {
               // Because we declared the category field above, it is available in here.
               // This allows us to tranform/filter the Product collection based on a specific category
