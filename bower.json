@@ -26,7 +26,8 @@
     "page": "visionmedia/page.js#1.6.3",
     "polymer": "Polymer/polymer#2.0.2",
     "sc-collection": "^4.3.1",
-    "sc-field": "^4.3.0"
+    "sc-field": "^4.3.0",
+    "web-animations-js": "^2.2.0"
   },
   "resolutions": {
     "webcomponentsjs": "^v1.0.2",
