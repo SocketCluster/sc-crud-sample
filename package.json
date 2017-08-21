@@ -13,7 +13,7 @@
     "express": "4.12.3",
     "minimist": "1.1.0",
     "serve-static": "1.8.0",
-    "sc-crud-rethink": "~6.0.0",
+    "sc-crud-rethink": "~6.0.2",
     "socketcluster": "~7.0.2",
     "socketcluster-client": "~7.0.1"
   },
