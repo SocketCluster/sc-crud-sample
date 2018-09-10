@@ -5,10 +5,13 @@
     <link href="//fonts.googleapis.com/css?family=Roboto:100,300" rel="stylesheet" type="text/css">
     <link rel="icon" type="image/png" href="/favicon.ico">
 
-    <script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-    <link rel="import" href="/app-inventory.html">
+    <script src="/node_modules/socketcluster-client/socketcluster.js"></script>
+    <script src="/node_modules/vue/dist/vue.min.js"></script>
+    <script src="/node_modules/vue-router/dist/vue-router.min.js"></script>
+    <script src="/app-inventory.js" type="module"></script>
+    <!-- <script src="/foo.js" type="module"></script> -->
   </head>
-  <body style="width: 100%; height: 100%; overflow-x: hidden;">
-    <app-inventory></app-inventory>
+  <body>
+    <div id="app"></div>
   </body>
 </html>

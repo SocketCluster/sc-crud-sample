@@ -1,0 +1,21 @@
+{
+  "name": "public",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "dependencies": {
+    "sc-collection": "^6.1.0",
+    "sc-component-emitter": "^1.2.1",
+    "sc-json-stable-stringify": "^2.0.0",
+    "sc-model": "^1.1.2",
+    "socketcluster-client": "^14.1.0",
+    "vue": "^2.5.17",
+    "vue-router": "^3.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jonathan Gros-Dubois",
+  "license": "MIT"
+}

@@ -91,12 +91,20 @@ module.exports.run = function (worker) {
   };
 
   function mustBeLoggedIn(req, next) {
-    if (req.socket.getAuthToken()) {
-      next();
-    } else {
-      next(true);
-      req.socket.emit('logout');
-    }
+    // if (req.action === 'read') {
+    // // if (true) {
+    //   // next(new Error('Cannot read'));
+    //   next('Cannot read');
+    //   return;
+    // }
+    next();
+    // TODO 2: Uncomment after and delete previous line
+    // if (req.socket.getAuthToken()) {
+    //   next();
+    // } else {
+    //   next(true);
+    //   req.socket.emit('logout');
+    // }
   }
 
   function postFilter(req, next) {
