@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.html",
   "dependencies": {
-    "sc-collection": "^6.1.0",
+    "sc-collection": "^6.1.3",
     "sc-component-emitter": "^1.2.1",
     "sc-json-stable-stringify": "^2.0.0",
     "sc-model": "^1.1.2",

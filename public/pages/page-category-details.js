@@ -73,6 +73,11 @@ function getPageComponent(pageOptions) {
         this.productsCollection.fetchNextPage();
       }
     },
+    beforeRouteLeave: function (to, from, next) {
+      this.categoryModel.destroy();
+      this.productsCollection.destroy();
+      next();
+    },
     template: `
       <div class="content-container">
         <a href="/#/"><< Back to category list</a>

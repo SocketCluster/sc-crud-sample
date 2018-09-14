@@ -45,6 +45,10 @@ function getPageComponent(pageOptions) {
         this.categoryCollection.fetchNextPage();
       }
     },
+    beforeRouteLeave: function (to, from, next) {
+      this.categoryCollection.destroy();
+      next();
+    },
     template: `
       <div class="page-container">
         <h2>Inventory Categories</h2>

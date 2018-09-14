@@ -1,7 +1,7 @@
 import getCategoryListPageComponent from '/pages/page-category-list.js';
 import getCategoryDetailsPageComponent from '/pages/page-category-details.js';
 
-let socket = socketCluster.connect();
+let socket = window.socket = socketCluster.connect();
 
 const pageOptions = {
   socket
