@@ -30,7 +30,7 @@ function getPageComponent(pageOptions) {
         products: this.productsCollection.value,
         productsMeta: this.productsCollection.meta,
         newProductName: '',
-        realtime: true
+        realtime: this.productsCollection.realtimeCollection
       };
     },
     computed: {
@@ -71,6 +71,22 @@ function getPageComponent(pageOptions) {
       },
       goToNextPage: function () {
         this.productsCollection.fetchNextPage();
+      },
+      toggleRealtime: function () {
+        this.productsCollection.destroy();
+        this.productsCollection = new SCCollection({
+          socket: pageOptions.socket,
+          type: 'Product',
+          fields: ['name', 'qty', 'price'],
+          view: 'categoryView',
+          viewParams: {category: this.categoryId},
+          pageOffset: 0,
+          pageSize: 5,
+          getCount: true,
+          realtimeCollection: this.realtime
+        });
+        this.products = this.productsCollection.value;
+        this.productsMeta = this.productsCollection.meta;
       }
     },
     beforeRouteLeave: function (to, from, next) {
@@ -81,7 +97,7 @@ function getPageComponent(pageOptions) {
     template: `
       <div class="page-container">
         <a href="/#/"><< Back to category list</a>
-        <h2 class="content-row heading">{{category.name}}</h2>
+        <h2 class="content-heading">{{category.name}}</h2>
         <div class="content-body">
           <p>
             <h4>Category description:</h4>
@@ -89,25 +105,26 @@ function getPageComponent(pageOptions) {
           </p>
           <h4>Products:</h4>
           <table class="table">
+            <tr>
+              <th>Name</th>
+              <th>Qty</th>
+              <th>Price</th>
+            </tr>
             <tr v-for="product of products">
               <td><a :href="computeProductDetailsUrl(category, product)">{{product.name}}</a></td>
               <td>{{product.qty}}</td>
               <td>{{product.price}}</td>
             </tr>
           </table>
-          <div class="content-row control-bar">
-            <div class="content-col-half search-container">
-              <input type="text" class="form-control" v-model="newProductName">
-            </div>
-            <div class="content-col-half">
-              <input type="button" class="btn" value="Add product" @click="addProduct">
-              <input type="checkbox" class="checkbox" style="margin-left: 10px; margin-top: 0;" v-model="realtime"> <span>Realtime collection</span>
-            </div>
-          </div>
-          <div class="content-row">
-            <div class="content-col">
+          <div class="control-bar">
+            <div style="padding-bottom: 20px;">
               <a href="javascript:void(0);" @click="goToPrevPage">Prev page</a> <span>Items </span><span>{{firstItemIndex}}</span><span> to </span><span>{{lastItemIndex}}</span> of <span>{{productsMeta.count}}</span> <a href="javascript:void(0);" @click="goToNextPage">Next page</a>
             </div>
+            <div style="width: 50%; float: left; margin-right: 10px;">
+              <input type="text" class="form-control" v-model="newProductName">
+            </div>
+            <input type="button" class="btn" value="Add product" @click="addProduct">
+            <input type="checkbox" class="checkbox" style="margin-left: 10px; margin-top: 0;" v-model="realtime" @change="toggleRealtime"> <span>Realtime collection</span>
           </div>
         </div>
       </div>

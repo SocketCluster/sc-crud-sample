@@ -26,7 +26,7 @@ new Vue({
   el: '#app',
   router,
   template: `
-    <div>
+    <div style="padding: 10px;">
       <router-view></router-view>
     </div>
   `

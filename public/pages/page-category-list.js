@@ -13,8 +13,7 @@ function getPageComponent(pageOptions) {
 
       return {
         categories: this.categoryCollection.value,
-        newCategoryName: '',
-        realtime: true
+        newCategoryName: ''
       };
     },
     methods: {
@@ -51,7 +50,7 @@ function getPageComponent(pageOptions) {
     },
     template: `
       <div class="page-container">
-        <h2>Inventory Categories</h2>
+        <h2 class="content-heading">Inventory Categories</h2>
         <div class="category-list">
           <table class="table">
             <tr>
@@ -63,15 +62,14 @@ function getPageComponent(pageOptions) {
           </table>
         </div>
         <div class="category-control-section">
-          <div class="category-search">
+          <div style="padding-bottom: 20px;">
+            <a href="javascript:void(0);" @click="goToPrevPage">Prev page</a> | <a href="javascript:void(0);" @click="goToNextPage">Next page</a>
+          </div>
+          <div style="width: 50%; float: left; margin-right: 10px;">
             <input type="text" class="form-control" v-model="newCategoryName">
           </div>
           <div class="category-actions">
             <input type="button" class="btn" value="Add category" @click="addCategory">
-            <input type="checkbox" class="checkbox" style="margin-left: 10px; margin-top: 0;" v-model="realtime"> <span>Realtime collection</span>
-          </div>
-          <div class="category-navigation">
-            <a href="javascript:void(0);" @click="goToPrevPage">Prev page</a> | <a href="javascript:void(0);" @click="goToNextPage">Next page</a>
           </div>
         </div>
       </div>

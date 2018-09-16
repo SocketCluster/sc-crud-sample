@@ -32,35 +32,31 @@ function getPageComponent(pageOptions) {
     },
     template: `
       <div class="page-container">
-        <a :href="computeCategoryDetailsUrl(categoryId)"><< Back to parent category</a>
-        <h2 class="content-row heading">#<span>{{product.id}}</span>&nbsp;-&nbsp;<span>{{product.name}}</span></h2>
+        <div class="nav-breadcrumbs">
+          <a :href="computeCategoryDetailsUrl(categoryId)"><< Back to parent category</a>
+        </div>
+        <h2 class="content-heading">#<span>{{product.id}}</span>&nbsp;-&nbsp;<span>{{product.name}}</span></h2>
         <div class="content-body">
-          <div class="content-row">
-            <div class="content-col">
-              Qty:
-            </div>
-            <div class="content-col">
-              <input type="text" class="form-control" v-model="product.qty" @change="saveValue">
+          <div class="input-area">
+            <label for="input-qty">Qty:</label>
+            <div>
+              <input id="input-qty" type="text" class="form-control" v-model="product.qty" @change="saveValue">
             </div>
           </div>
-          <div class="content-row">
-            <div class="content-col">
-              Price:
-            </div>
-            <div class="content-col">
-              <input type="text" class="form-control" v-model="product.price" @change="saveValue">
+          <div class="input-area">
+            <label for="input-price">Price:</label>
+            <div>
+              <input id="input-price" type="text" class="form-control" v-model="product.price" @change="saveValue">
             </div>
           </div>
-          <div class="content-row">
-            <div class="content-col">
-              Description:
-            </div>
-            <div class="content-col">
-              <input type="text" class="form-control" v-model="product.desc" @change="saveValue">
+          <div class="input-area">
+            <label for="input-desc">Description:</label>
+            <div>
+              <input id="input-desc" type="text" class="form-control" v-model="product.desc" @change="saveValue">
             </div>
           </div>
-          <div class="content-row">
-            <div class="content-col">
+          <div>
+            <div>
               <b>Press enter key to save.</b>
             </div>
           </div>

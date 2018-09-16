@@ -3,13 +3,31 @@
   <head>
     <title>SocketCluster Inventory Tracking Sample</title>
     <link href="//fonts.googleapis.com/css?family=Roboto:100,300" rel="stylesheet" type="text/css">
+    <link href="/styles/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link rel="icon" type="image/png" href="/favicon.ico">
+    <style>
+      body {
+        padding: 10px;
+      }
+      .content-heading {
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
+      .input-area {
+        padding-bottom: 10px;
+      }
+      .content-body {
+        max-width: 800px;
+      }
+      .nav-breadcrumbs {
+        padding-bottom: 10px;
+      }
+    </style>
 
     <script src="/node_modules/socketcluster-client/socketcluster.js"></script>
     <script src="/node_modules/vue/dist/vue.min.js"></script>
     <script src="/node_modules/vue-router/dist/vue-router.min.js"></script>
     <script src="/app-inventory.js" type="module"></script>
-    <!-- <script src="/foo.js" type="module"></script> -->
   </head>
   <body>
     <div id="app"></div>
