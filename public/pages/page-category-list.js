@@ -37,6 +37,11 @@ function getPageComponent(pageOptions) {
           // TODO: Handle error
         });
       },
+      inputKeyDown: function (event) {
+        if (event.key === 'Enter') {
+          this.addCategory();
+        }
+      },
       goToPrevPage: function () {
         this.categoryCollection.fetchPreviousPage();
       },
@@ -66,7 +71,7 @@ function getPageComponent(pageOptions) {
             <a href="javascript:void(0);" @click="goToPrevPage">Prev page</a> | <a href="javascript:void(0);" @click="goToNextPage">Next page</a>
           </div>
           <div style="width: 50%; float: left; margin-right: 10px;">
-            <input type="text" class="form-control" v-model="newCategoryName">
+            <input type="text" class="form-control" v-model="newCategoryName" @keydown="inputKeyDown">
           </div>
           <div class="category-actions">
             <input type="button" class="btn" value="Add category" @click="addCategory">

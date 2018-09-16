@@ -66,6 +66,11 @@ function getPageComponent(pageOptions) {
           // TODO: Handle error
         });
       },
+      inputKeyDown: function (event) {
+        if (event.key === 'Enter') {
+          this.addProduct();
+        }
+      },
       goToPrevPage: function () {
         this.productsCollection.fetchPreviousPage();
       },
@@ -121,7 +126,7 @@ function getPageComponent(pageOptions) {
               <a href="javascript:void(0);" @click="goToPrevPage">Prev page</a> <span>Items </span><span>{{firstItemIndex}}</span><span> to </span><span>{{lastItemIndex}}</span> of <span>{{productsMeta.count}}</span> <a href="javascript:void(0);" @click="goToNextPage">Next page</a>
             </div>
             <div style="width: 50%; float: left; margin-right: 10px;">
-              <input type="text" class="form-control" v-model="newProductName">
+              <input type="text" class="form-control" v-model="newProductName" @keydown="inputKeyDown">
             </div>
             <input type="button" class="btn" value="Add product" @click="addProduct">
             <input type="checkbox" class="checkbox" style="margin-left: 10px; margin-top: 0;" v-model="realtime" @change="toggleRealtime"> <span>Realtime collection</span>
