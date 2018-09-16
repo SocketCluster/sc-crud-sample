@@ -46,7 +46,7 @@ function getPageComponent(pageOptions) {
     },
     methods: {
       computeProductDetailsUrl: function (category, product) {
-        return `#!/category/${category.id}/product/${product.id}`;
+        return `#/category/${category.id}/product/${product.id}`;
       },
       addProduct: function () {
         if (this.newProductName === '') {
@@ -79,7 +79,7 @@ function getPageComponent(pageOptions) {
       next();
     },
     template: `
-      <div class="content-container">
+      <div class="page-container">
         <a href="/#/"><< Back to category list</a>
         <h2 class="content-row heading">{{category.name}}</h2>
         <div class="content-body">
