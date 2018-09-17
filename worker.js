@@ -91,20 +91,12 @@ module.exports.run = function (worker) {
   };
 
   function mustBeLoggedIn(req, next) {
-    // if (req.action === 'read') {
-    // // if (true) {
-    //   // next(new Error('Cannot read'));
-    //   next('Cannot read');
-    //   return;
-    // }
-    next();
-    // TODO 2: Uncomment after and delete previous line
-    // if (req.socket.getAuthToken()) {
-    //   next();
-    // } else {
-    //   next(true);
-    //   req.socket.emit('logout');
-    // }
+    if (req.socket.getAuthToken()) {
+      next();
+    } else {
+      next(true);
+      req.socket.emit('logout');
+    }
   }
 
   function postFilter(req, next) {
@@ -112,19 +104,6 @@ module.exports.run = function (worker) {
     // resource object from the DB.
     // In case of read actions, you can even modify the
     // resource's properties before it gets sent back to the user.
-    // console.log('r', !!req.r.table);
-    // console.log('action', req.action);
-    // console.log('socket', req.socket.id);
-    // console.log('authToken', req.authToken);
-    // console.log('query', req.query);
-    // console.log('resource', req.resource);
-    // console.log('-------');
-    // if (req.resource.name == 'Foo') {
-    //   var err = new Error('MAJOR FAIL');
-    //   err.name = 'MajorFailError';
-    //   next(err);
-    //   return;
-    // }
     next();
   }
 
