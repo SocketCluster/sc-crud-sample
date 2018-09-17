@@ -26,10 +26,10 @@ let router = new VueRouter({
 
 new Vue({
   el: '#app',
+  router,
   components: {
     'page-login': PageLogin
   },
-  router,
   data: function () {
     return {
       isAuthenticated: false
@@ -40,6 +40,22 @@ new Vue({
     socket.on('authStateChange', () => {
       this.isAuthenticated = this.isSocketAuthenticated();
     });
+    this._localStorageAuthHandler = (change) => {
+      // In case the user logged in from a different tab
+      if (change.key === socket.options.authTokenName) {
+       if (this.isAuthenticated) {
+         if (!change.newValue) {
+           socket.deauthenticate();
+         }
+       } else if (change.newValue) {
+         socket.authenticate(change.newValue);
+       }
+      }
+    };
+    window.addEventListener('storage', this._localStorageAuthHandler);
+  },
+  destroyed: function () {
+    window.removeEventListener('storage', this._localStorageAuthHandler);
   },
   methods: {
     isSocketAuthenticated: function () {
