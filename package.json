@@ -14,6 +14,7 @@
     "express": "4.12.3",
     "minimist": "1.1.0",
     "sc-crud-rethink": "^6.0.2",
+    "scc-broker-client": "^6.0.1",
     "serve-static": "1.8.0",
     "socketcluster": "^14.1.1",
     "socketcluster-client": "^14.1.0"
