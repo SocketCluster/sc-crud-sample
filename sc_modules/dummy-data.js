@@ -36,7 +36,7 @@ module.exports.attach = function (scServer, scCrudRethink) {
         },
         4: {
           name: 'Laptops',
-          desc: 'Laptops computers'
+          desc: 'Laptop computers'
         }
       };
 
