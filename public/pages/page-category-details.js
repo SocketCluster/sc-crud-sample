@@ -14,6 +14,17 @@ function getPageComponent(pageOptions) {
         fields: ['name', 'desc']
       });
 
+      this.productsCollection = new SCCollection({
+        socket: pageOptions.socket,
+        type: 'Product',
+        fields: ['name', 'qty', 'price'],
+        view: 'categoryView',
+        viewParams: {category: this.categoryId},
+        pageOffset: 0,
+        pageSize: 5,
+        getCount: true
+      });
+
       let lowStockThreshold = 3;
 
       this.lowStockProductsCollection = new SCCollection({
@@ -26,17 +37,6 @@ function getPageComponent(pageOptions) {
         pageOffset: 0,
         pageSize: 5,
         getCount: false
-      });
-
-      this.productsCollection = new SCCollection({
-        socket: pageOptions.socket,
-        type: 'Product',
-        fields: ['name', 'qty', 'price'],
-        view: 'categoryView',
-        viewParams: {category: this.categoryId},
-        pageOffset: 0,
-        pageSize: 5,
-        getCount: true
       });
 
       return {
