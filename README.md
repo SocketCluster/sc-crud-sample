@@ -1,4 +1,4 @@
-# sc-sample-inventory
+# sc-crud-sample
 
 Scroll to the bottom for installation instructions.
 
@@ -36,8 +36,8 @@ To setup and run this sample:
 - Make sure you have Git installed (https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 - Make sure you have Node.js installed (http://nodejs.org/)
 - Make sure you have RethinkDB installed (https://www.rethinkdb.com/)
-- Run ```git clone https://github.com/SocketCluster/sc-sample-inventory.git```
-- Run ```cd sc-sample-inventory``` (to navigate to the sc-sample-inventory/ directory)
+- Run ```git clone https://github.com/SocketCluster/sc-crud-sample.git```
+- Run ```cd sc-crud-sample``` (to navigate to the sc-crud-sample/ directory)
 - Run ```npm install``` (to install back end modules)
 - Run ```cd public && npm install && cd ..``` (to install front end modules inside the public/ directory)
 - In a different terminal (or in the background), run ```sudo rethinkdb``` (make sure RethinkDB stays running)
