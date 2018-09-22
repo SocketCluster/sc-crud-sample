@@ -5,14 +5,14 @@ import getLoginPageComponent from '/pages/page-login.js';
 
 let socket = window.socket = socketCluster.connect();
 
-const pageOptions = {
+let pageOptions = {
   socket
 };
 
-const PageCategoryList = getCategoryListPageComponent(pageOptions);
-const PageCategoryDetails = getCategoryDetailsPageComponent(pageOptions);
-const PageProductDetails = getProductDetailsPageComponent(pageOptions);
-const PageLogin = getLoginPageComponent(pageOptions);
+let PageCategoryList = getCategoryListPageComponent(pageOptions);
+let PageCategoryDetails = getCategoryDetailsPageComponent(pageOptions);
+let PageProductDetails = getProductDetailsPageComponent(pageOptions);
+let PageLogin = getLoginPageComponent(pageOptions);
 
 let routes = [
   { path: '/category/:categoryId/product/:productId', component: PageProductDetails, props: true },
