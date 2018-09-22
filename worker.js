@@ -61,11 +61,12 @@ class Worker extends SCWorker {
             categoryView: {
               // Declare the fields from the Product model which are required by the transform function.
               paramFields: ['category'],
-              affectingFields: ['qty'],
+              affectingFields: ['name'],
               transform: function (fullTableQuery, r, productFields) {
                 // Because we declared the category field above, it is available in here.
                 // This allows us to tranform/filter the Product collection based on a specific category
                 // ID provided by the frontend.
+                // return fullTableQuery.filter(r.row('category').eq(productFields.category)).orderBy(r.asc('name'));
                 return fullTableQuery.filter(r.row('category').eq(productFields.category)).orderBy(r.asc('name'));
               }
             },

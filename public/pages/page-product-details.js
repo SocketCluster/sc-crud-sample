@@ -38,6 +38,12 @@ function getPageComponent(pageOptions) {
         </div>
         <h2 class="content-heading">#<span>{{product.id}}</span>&nbsp;-&nbsp;<span>{{product.name}}</span></h2>
         <div class="content-body">
+        <div class="input-area">
+          <label for="input-name">Name:</label>
+          <div>
+            <input id="input-name" type="text" class="form-control" v-model="product.name" @change="saveValue">
+          </div>
+        </div>
           <div class="input-area">
             <label for="input-qty">Qty:</label>
             <div>
