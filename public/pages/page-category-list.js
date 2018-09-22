@@ -12,6 +12,7 @@ function getPageComponent(pageOptions) {
       });
 
       return {
+        // An array of categories which will be updated in real-time by our collection.
         categories: this.categoryCollection.value,
         newCategoryName: ''
       };

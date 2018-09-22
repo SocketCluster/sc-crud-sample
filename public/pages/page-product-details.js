@@ -15,6 +15,7 @@ function getPageComponent(pageOptions) {
       });
 
       return {
+        // A product object which will be updated in real-time by our model.
         product: this.productModel.value
       };
     },

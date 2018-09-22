@@ -40,8 +40,11 @@ function getPageComponent(pageOptions) {
       });
 
       return {
+        // A category object which will be updated in real-time by our model.
         category: this.categoryModel.value,
+        // An array of products which will be updated in real-time by our collection.
         products: this.productsCollection.value,
+        // An object which contains meta data about the collection (such as the total number of items); also updates in teal-time.
         productsMeta: this.productsCollection.meta,
         lowStockProducts: this.lowStockProductsCollection.value,
         lowStockThreshold,
