@@ -3,7 +3,7 @@ import getCategoryDetailsPageComponent from '/pages/page-category-details.js';
 import getProductDetailsPageComponent from '/pages/page-product-details.js';
 import getLoginPageComponent from '/pages/page-login.js';
 
-let socket = window.socket = socketCluster.connect();
+let socket = window.socket = socketCluster.create();
 
 let pageOptions = {
   socket
