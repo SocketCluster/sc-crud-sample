@@ -56,9 +56,7 @@ function getPageComponent(pageOptions) {
             </div>
           </div>
           <div>
-            <div>
-              <b>Press enter key to save.</b>
-            </div>
+            <b>Press enter key to save.</b>
           </div>
         </div>
       </div>

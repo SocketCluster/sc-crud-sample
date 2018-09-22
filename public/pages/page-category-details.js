@@ -14,6 +14,20 @@ function getPageComponent(pageOptions) {
         fields: ['name', 'desc']
       });
 
+      let lowStockThreshold = 3;
+
+      this.lowStockProductsCollection = new SCCollection({
+        socket: pageOptions.socket,
+        type: 'Product',
+        fields: ['name', 'qty', 'price'],
+        view: 'lowStockView',
+        viewParams: {category: this.categoryId, qty: lowStockThreshold},
+        viewPrimaryKeys: ['category'],
+        pageOffset: 0,
+        pageSize: 5,
+        getCount: false
+      });
+
       this.productsCollection = new SCCollection({
         socket: pageOptions.socket,
         type: 'Product',
@@ -29,6 +43,8 @@ function getPageComponent(pageOptions) {
         category: this.categoryModel.value,
         products: this.productsCollection.value,
         productsMeta: this.productsCollection.meta,
+        lowStockProducts: this.lowStockProductsCollection.value,
+        lowStockThreshold,
         newProductName: '',
         realtime: this.productsCollection.realtimeCollection
       };
@@ -45,6 +61,21 @@ function getPageComponent(pageOptions) {
       }
     },
     methods: {
+      refreshLowStockCollection: function () {
+        this.lowStockProductsCollection.destroy();
+        this.lowStockProductsCollection = new SCCollection({
+          socket: pageOptions.socket,
+          type: 'Product',
+          fields: ['name', 'qty', 'price'],
+          view: 'lowStockView',
+          viewParams: {category: this.categoryId, qty: parseInt(this.lowStockThreshold)},
+          viewPrimaryKeys: ['category'],
+          pageOffset: 0,
+          pageSize: 5,
+          getCount: false
+        });
+        this.lowStockProducts = this.lowStockProductsCollection.value;
+      },
       computeProductDetailsUrl: function (category, product) {
         return `#/category/${category.id}/product/${product.id}`;
       },
@@ -104,32 +135,58 @@ function getPageComponent(pageOptions) {
         <a href="/#/"><< Back to category list</a>
         <h2 class="content-heading">{{category.name}}</h2>
         <div class="content-body">
-          <p>
-            <h4>Category description:</h4>
-            <span>{{category.desc}}</span>
-          </p>
-          <h4>Products:</h4>
-          <table class="table">
-            <tr>
-              <th>Name</th>
-              <th>Qty</th>
-              <th>Price</th>
-            </tr>
-            <tr v-for="product of products">
-              <td><a :href="computeProductDetailsUrl(category, product)">{{product.name}}</a></td>
-              <td>{{product.qty}}</td>
-              <td>{{product.price}}</td>
-            </tr>
-          </table>
-          <div class="control-bar">
-            <div style="padding-bottom: 20px;">
-              <a href="javascript:void(0);" @click="goToPrevPage">Prev page</a> <span>Items </span><span>{{firstItemIndex}}</span><span> to </span><span>{{lastItemIndex}}</span> of <span>{{productsMeta.count}}</span> <a href="javascript:void(0);" @click="goToNextPage">Next page</a>
+          <div class="all-category-products">
+            <p>
+              <h4>Category description:</h4>
+              <span>{{category.desc}}</span>
+            </p>
+            <h4>Products:</h4>
+            <table class="table">
+              <tr>
+                <th>Name</th>
+                <th>Qty</th>
+                <th>Price</th>
+              </tr>
+              <tr v-for="product of products">
+                <td><a :href="computeProductDetailsUrl(category, product)">{{product.name}}</a></td>
+                <td>{{product.qty}}</td>
+                <td>{{product.price}}</td>
+              </tr>
+            </table>
+
+            <div class="control-bar">
+              <div style="padding-bottom: 20px;">
+                <a href="javascript:void(0);" @click="goToPrevPage">Prev page</a> <span>Items </span><span>{{firstItemIndex}}</span><span> to </span><span>{{lastItemIndex}}</span> of <span>{{productsMeta.count}}</span> <a href="javascript:void(0);" @click="goToNextPage">Next page</a>
+              </div>
+              <div style="width: 50%; float: left; margin-right: 10px;">
+                <input type="text" class="form-control" v-model="newProductName" @keydown="inputKeyDown">
+              </div>
+              <input type="button" class="btn" value="Add product" @click="addProduct">
+              <input type="checkbox" class="checkbox" style="margin-left: 10px; margin-top: 0;" v-model="realtime" @change="toggleRealtime"> <span>Realtime collection</span>
             </div>
-            <div style="width: 50%; float: left; margin-right: 10px;">
-              <input type="text" class="form-control" v-model="newProductName" @keydown="inputKeyDown">
-            </div>
-            <input type="button" class="btn" value="Add product" @click="addProduct">
-            <input type="checkbox" class="checkbox" style="margin-left: 10px; margin-top: 0;" v-model="realtime" @change="toggleRealtime"> <span>Realtime collection</span>
+          </div>
+
+          <hr style="margin-top: 50px; margin-bottom: 50px;">
+
+          <div class="low-stock-category-products" style="min-height: 500px">
+          <h4>Products that are running low:</h4>
+            <table class="table">
+              <tr>
+                <th>Name</th>
+                <th>Qty</th>
+                <th>Price</th>
+              </tr>
+              <tr v-for="product of lowStockProducts">
+                <td><a :href="computeProductDetailsUrl(category, product)">{{product.name}}</a></td>
+                <td>{{product.qty}}</td>
+                <td>{{product.price}}</td>
+              </tr>
+            </table>
+            <p>
+              <h4>Low stock threshold:</h4>
+              <input id="input-desc" type="text" v-model="lowStockThreshold" class="form-control" @change="refreshLowStockCollection" style="width: 100px; float: left; margin-right: 10px;">
+              <input type="button" class="btn" value="Update" @click="refreshLowStockCollection" style="float: left;">
+            </p>
           </div>
         </div>
       </div>
