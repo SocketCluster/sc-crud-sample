@@ -49,8 +49,8 @@ module.exports.attach = function (scServer, scCrudRethink) {
       });
 
       var users = {
-        'bob': {
-          username: 'bob',
+        'alice': {
+          username: 'alice',
           password: 'password123'
         }
       };

@@ -6,7 +6,7 @@ function getPageComponent(pageOptions) {
     data: function () {
       return {
         error: null,
-        username: 'bob',
+        username: 'alice',
         password: 'password123'
       };
     },
