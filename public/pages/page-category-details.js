@@ -168,25 +168,27 @@ function getPageComponent(pageOptions) {
 
           <hr style="margin-top: 50px; margin-bottom: 50px;">
 
-          <div class="low-stock-category-products" style="min-height: 500px">
+          <div class="low-stock-category-products">
           <h4>Products that are running low:</h4>
-            <table class="table">
-              <tr>
-                <th>Name</th>
-                <th>Qty</th>
-                <th>Price</th>
-              </tr>
-              <tr v-for="product of lowStockProducts">
-                <td><a :href="computeProductDetailsUrl(category, product)">{{product.name}}</a></td>
-                <td>{{product.qty}}</td>
-                <td>{{product.price}}</td>
-              </tr>
-            </table>
-            <p>
+            <div style="min-height: 300px">
+              <table class="table">
+                <tr>
+                  <th>Name</th>
+                  <th>Qty</th>
+                  <th>Price</th>
+                </tr>
+                <tr v-for="product of lowStockProducts">
+                  <td><a :href="computeProductDetailsUrl(category, product)">{{product.name}}</a></td>
+                  <td>{{product.qty}}</td>
+                  <td>{{product.price}}</td>
+                </tr>
+              </table>
+            </div>
+            <div style="margin-bottom: 100px;">
               <h4>Low stock threshold:</h4>
               <input id="input-desc" type="text" v-model="lowStockThreshold" class="form-control" @change="refreshLowStockCollection" style="width: 100px; float: left; margin-right: 10px;">
               <input type="button" class="btn" value="Update" @click="refreshLowStockCollection" style="float: left;">
-            </p>
+            </div>
           </div>
         </div>
       </div>
