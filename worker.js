@@ -77,7 +77,7 @@ class Worker extends SCWorker {
                 // Because we declared the category field above, it is available in here.
                 // This allows us to tranform/filter the Product collection based on a specific category
                 // ID provided by the frontend.
-                return fullTableQuery.filter(r.row('category').eq(productFields.category)).filter(r.row('qty').le(productFields.qty));
+                return fullTableQuery.filter(r.row('category').eq(productFields.category)).filter(r.row('qty').le(productFields.qty)).orderBy(r.asc('qty'));
               }
             }
           },
