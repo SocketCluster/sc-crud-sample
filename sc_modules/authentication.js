@@ -18,7 +18,7 @@ module.exports.attach = function (scServer, socket) {
 
   var validateLoginDetails = function (loginDetails, respond) {
     scServer.thinky.r.table('User').filter({username: loginDetails.username}).run(function (err, results) {
-      if (results && results[0] && results[0].password == loginDetails.password) {
+      if (results && results[0] && results[0].password === loginDetails.password) {
         var token = {
           username: loginDetails.username
         };
