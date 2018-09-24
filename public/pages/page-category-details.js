@@ -144,18 +144,20 @@ function getPageComponent(pageOptions) {
               <span>{{category.desc}}</span>
             </p>
             <h4>Products:</h4>
-            <table class="table">
-              <tr>
-                <th>Name</th>
-                <th>Qty</th>
-                <th>Price</th>
-              </tr>
-              <tr v-for="product of products">
-                <td><a :href="computeProductDetailsUrl(category, product)">{{product.name}}</a></td>
-                <td>{{product.qty}}</td>
-                <td>{{product.price}}</td>
-              </tr>
-            </table>
+            <div style="min-height: 300px;">
+              <table class="table">
+                <tr>
+                  <th>Name</th>
+                  <th>Qty</th>
+                  <th>Price</th>
+                </tr>
+                <tr v-for="product of products">
+                  <td><a :href="computeProductDetailsUrl(category, product)">{{product.name}}</a></td>
+                  <td>{{product.qty}}</td>
+                  <td>{{product.price}}</td>
+                </tr>
+              </table>
+            </div>
 
             <div class="control-bar">
               <div style="padding-bottom: 20px;">
@@ -173,7 +175,7 @@ function getPageComponent(pageOptions) {
 
           <div class="low-stock-category-products">
           <h4>Products that are running low:</h4>
-            <div style="min-height: 300px">
+            <div style="min-height: 300px;">
               <table class="table">
                 <tr>
                   <th>Name</th>
