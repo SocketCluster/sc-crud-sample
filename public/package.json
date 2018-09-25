@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.html",
   "dependencies": {
-    "sc-collection": "^6.1.6",
+    "sc-collection": "^7.0.0",
     "sc-component-emitter": "^1.2.1",
     "sc-json-stable-stringify": "^2.0.0",
-    "sc-model": "^1.1.5",
+    "sc-model": "^1.1.6",
     "socketcluster-client": "^14.1.0",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1"
