@@ -104,7 +104,7 @@ class Worker extends SCWorker {
     };
 
     function mustBeLoggedIn(req, next) {
-      if (req.socket.getAuthToken()) {
+      if (req.socket.authToken) {
         next();
       } else {
         next(true);
