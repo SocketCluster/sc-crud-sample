@@ -131,6 +131,7 @@ function getPageComponent(pageOptions) {
     beforeRouteLeave: function (to, from, next) {
       this.categoryModel.destroy();
       this.productsCollection.destroy();
+      this.lowStockProductsCollection.destroy();
       next();
     },
     template: `
