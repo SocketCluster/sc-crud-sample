@@ -5,7 +5,7 @@ module.exports.attach = function (scServer, socket) {
   // Keep renewing the token (if there is one) at a predefined interval to make sure that
   // it doesn't expire while the connection is active.
   var renewAuthTokenInterval = setInterval(function () {
-    var currentToken = socket.getAuthToken();
+    var currentToken = socket.authToken;
     if (currentToken) {
       currentToken.exp = Math.round(Date.now() / 1000) + tokenExpiresInSeconds;
       socket.setAuthToken(currentToken);
